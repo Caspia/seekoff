@@ -1,0 +1,43 @@
+{
+  "name": "stackcaspia",
+  "productName": "Stackcaspia",
+  "version": "0.0.0",
+  "description": "My primo app",
+  "license": "MIT",
+  "repository": "rkentjames/stackcaspia",
+  "author": {
+    "name": "R. Kent James",
+    "email": "rkent@caspia.com",
+    "url": "caspia.com"
+  },
+  "scripts": {
+    "test": "xo",
+    "start": "electron .",
+    "build": "electron-packager . --out=dist --asar --overwrite --all"
+  },
+  "files": [
+    "index.js",
+    "index.html",
+    "index.css"
+  ],
+  "keywords": [
+    "electron-app",
+    "electron"
+  ],
+  "dependencies": {
+    "electron-debug": "^1.0.0"
+  },
+  "devDependencies": {
+    "devtron": "^1.1.0",
+    "electron-packager": "^8.0.0",
+    "electron": "^1.3.3",
+    "xo": "^0.16.0"
+  },
+  "xo": {
+    "esnext": true,
+    "envs": [
+      "node",
+      "browser"
+    ]
+  }
+}
