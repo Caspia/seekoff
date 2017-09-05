@@ -25,3 +25,14 @@ header h1 {
 	margin: 0;
 	padding: 0;
 }
+
+.footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  margin: 10px;
+}
+
+footer {
+  margin: 10 px;
+}
