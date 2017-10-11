@@ -4,8 +4,8 @@
  */
 
 const {app, Menu, BrowserWindow} = require('electron');
-const fileMenuTemplate = require('./lib/menus/fileMenuTemplate');
-const elasticMenuTemplate = require('./lib/menus/elasticMenuTemplate');
+const fileMenuTemplate = require('./main/fileMenuTemplate');
+const elasticMenuTemplate = require('./main/elasticMenuTemplate');
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
@@ -21,11 +21,11 @@ function onClosed () {
 
 function createMainWindow () {
   const win = new BrowserWindow({
-    width: 600,
-    height: 400
+    width: 1366,
+    height: 768
   });
 
-  win.loadURL(`file://${__dirname}/main.html`);
+  win.loadURL(`file://${__dirname}/index.html`);
   win.on('closed', onClosed);
 
   global.mainWindowId = win.id;
