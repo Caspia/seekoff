@@ -35,5 +35,4 @@ describe('elasticClient functionality', function () {
     const indicies = await elasticClient.getIndicies(client);
     assert(indicies.includes(TEST_INDEX), 'the created test index should be in the list of indicies');
   });
-
 });
