@@ -29,6 +29,7 @@
     "elasticsearch": "^13.3.1",
     "electron-debug": "^1.0.0",
     "fs-extra": "^4.0.2",
+    "promise-limit": "^2.5.0",
     "pug": "^2.0.0-rc.3",
     "xml2js": "^0.4.19"
   },

@@ -71,7 +71,7 @@ describe('indexing of xml files into elastic search', function () {
       try {
         await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
       } catch (err) { }
-      await elasticClient.createIndex(client, TEST_INDEX_PREFIX + type, 'sePath');
+      await elasticClient.createIndex(client, TEST_INDEX_PREFIX + type, type);
     }
   });
 
@@ -82,6 +82,7 @@ describe('indexing of xml files into elastic search', function () {
   });
 
   it('Indexes a directory containing stack overflow files', async function () {
+    this.timeout(5000);
     await readFiles(dataPath, client, TEST_INDEX_PREFIX);
   });
 

@@ -9,13 +9,13 @@ const mainMsg = require('./mainMsg');
 
 const client = new elasticsearch.Client({
   host: 'localhost:9200',
-  log: 'error'
+  log: 'error',
 });
 
-function doPing () {
+function doPing() {
   console.log('ping request');
   client.ping({
-    requestTimeout: 5000
+    requestTimeout: 5000,
   })
     .then(r => {
       mainMsg.sendStatus('Ping Successful');
@@ -26,7 +26,7 @@ function doPing () {
     });
 }
 
-function getIndices () {
+function getIndices() {
   console.log('elasticRequest getIndices');
   client.indices.get({index: '*'})
     .then(result => {
@@ -47,7 +47,7 @@ function getIndices () {
     });
 }
 
-async function putDocument (index, type, body) {
+async function putDocument(index, type, body) {
   return new Promise((resolve, reject) => {
     client.index({index: index, type: type, id: body.Id, body: body}, (error, response) => {
       if (error) reject(error);

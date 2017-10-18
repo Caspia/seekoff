@@ -4,7 +4,9 @@
  */
 
 const {BrowserWindow, dialog} = require('electron');
-const {openFile} = require('../lib/dataSources');
+const {readFiles} = require('../lib/elasticReader');
+const {INDEX_PREFIX} = require('../lib/constants');
+const {client} = require('../lib/elasticClient');
 
 const fileMenuTemplate = {
   label: 'File',
@@ -14,20 +16,25 @@ const fileMenuTemplate = {
       accelerator: 'Alt+CmdOrCtrl+I',
       click: () => {
         BrowserWindow.getFocusedWindow().toggleDevTools();
-      }
+      },
     },
     {
-      label: 'Open File',
-      click: () => {
+      label: 'Index Directory',
+      click: async () => {
         const files = dialog.showOpenDialog({
-          title: 'Get file to process',
-          properties: ['openFile']});
-        console.log('Files are ' + JSON.stringify(files));
-        openFile(files ? files[0] : null);
-      }
+          title: 'Get directory to process',
+          properties: ['openDirectory']});
+        console.log('Directories are ' + JSON.stringify(files));
+        try {
+          await readFiles(files ? files[0] : null, client, INDEX_PREFIX);
+          console.log('Done reading files');
+        } catch (err) {
+          console.log('Error indexing files: ' + err);
+        }
+      },
     },
-    { role: 'quit' }
-  ]
+    { role: 'quit' },
+  ],
 };
 
 module.exports = fileMenuTemplate;
