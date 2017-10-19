@@ -12,7 +12,10 @@
   },
   "scripts": {
     "start": "electron ./app.js",
-    "build": "electron-packager . --out=dist --asar --overwrite --all"
+    "build": "electron-packager . --out=dist --asar --overwrite --all",
+    "devstart": "SET DEBUG=stackcaspia:server && npm run server",
+    "server": "node bin/www.js"
+
   },
   "files": [
     "app.js",
@@ -28,6 +31,7 @@
     "dialogs": "^1.1.20",
     "elasticsearch": "^13.3.1",
     "electron-debug": "^1.0.0",
+    "express": "^4.15.4",
     "fs-extra": "^4.0.2",
     "promise-limit": "^2.5.0",
     "pug": "^2.0.0-rc.3",
