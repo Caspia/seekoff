@@ -15,7 +15,6 @@
     "build": "electron-packager . --out=dist --asar --overwrite --all",
     "devstart": "SET DEBUG=stackcaspia:server && npm run server",
     "server": "node bin/www.js"
-
   },
   "files": [
     "app.js",
@@ -27,11 +26,13 @@
     "electron"
   ],
   "dependencies": {
+    "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "dialogs": "^1.1.20",
     "elasticsearch": "^13.3.1",
     "electron-debug": "^1.0.0",
     "express": "^4.15.4",
+    "express-validator": "^4.2.1",
     "fs-extra": "^4.0.2",
     "promise-limit": "^2.5.0",
     "pug": "^2.0.0-rc.3",

@@ -12,7 +12,7 @@ const pug = require('pug');
  * 
  * @param {String} msg The text to display. 
  */
-function setStatusMsg (msg) {
+function setStatusMsg(msg) {
   document.getElementById('statusfooter').innerText = msg;
 }
 
@@ -41,7 +41,7 @@ window.onload = () => {
 /**
  * Process a menu selection from main process
  */
-function onMenuSelection () {
+function onMenuSelection() {
   ipcRenderer.on('menuselect', (event, menuEvent) => {
     console.log('Menu selected: ' + menuEvent);
     switch (menuEvent) {
@@ -61,12 +61,10 @@ function onMenuSelection () {
     const pugHtml = pug.renderFile(viewName, parms);
     console.log('pugResult: ' + pugHtml);
     document.getElementById('mainbody').innerHTML = pugHtml;
-    //mainMsg.sendBody(pugHtml);
-
+    // mainMsg.sendBody(pugHtml);
   });
-
 }
 
-function commandElasticPing () {
+function commandElasticPing() {
   ipcRenderer.send('elastic-request', 'ping');
 }

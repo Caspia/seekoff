@@ -8,8 +8,10 @@ const debug = require('debug')('stackcaspia:server');
 const http = require('http');
 const constants = require('../lib/constants');
 const path = require('path');
-const home = require('./routes/home.js');
+const homeRoute = require('./routes/homeRoute.js');
 const express = require('express');
+const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
 
 let gServer;
 let gApp;
@@ -23,7 +25,9 @@ function initapp(app) {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/', home);
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(expressValidator());
+  app.use('/', homeRoute);
 
   /**
    * Get port from environment and store in Express.
