@@ -102,7 +102,7 @@ describe('indexing of xml files into elastic search', function () {
 
   it('returns documents from search', async function () {
     const res = await elasticClient.search(client, TEST_INDEX_PREFIX + 'sepost', 'compare OR better', {});
-    // console.log(prettyjson.render(res));
+    console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 3, 'Query returns proper number of hits');
     assert.equal(res.hits.hits[2]._source.Title, 'What questions should be definitely off-topic?', 'Expected post found');
   });

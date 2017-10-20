@@ -8,7 +8,8 @@ const debug = require('debug')('stackcaspia:server');
 const http = require('http');
 const constants = require('../lib/constants');
 const path = require('path');
-const homeRoute = require('./routes/homeRoute.js');
+const homeRoute = require('./routes/homeRoute');
+const searchRoute = require('./routes/searchRoute');
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
@@ -27,7 +28,10 @@ function initapp(app) {
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(expressValidator());
+
+  // routing
   app.use('/', homeRoute);
+  app.use('/search', searchRoute);
 
   /**
    * Get port from environment and store in Express.

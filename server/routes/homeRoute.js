@@ -3,9 +3,8 @@
  */
 
 const router = require('express').Router();
-const {homeGet, homePost} = require('../controllers/homeControl');
+const {homeGet} = require('../controllers/homeControl');
 
 router.get('/', homeGet);
-router.post('/', homePost);
 
 module.exports = router;

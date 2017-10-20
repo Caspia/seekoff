@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+/* highlights of hit text */
+.highlight {
+  background-color: #e0e0ff;
+}
+.highlight em {
+  color: red;
+}

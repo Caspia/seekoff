@@ -8,7 +8,17 @@ block content
       label(for='search_term') Search:
       input#search_term.form-control(type='text', name='search_term')
     button.btn.btn-primary(type='submit') Search
+  hr
   if errors
     ul
       for error in errors
-        li!= error.msg
+        li!= error.msg || error
+  if renderResults
+    each result in renderResults
+      if result.title
+        h3= result.title
+        .highlight
+          p !{result.highlight}
+      else
+        p= JSON.stringify(result)
+    
