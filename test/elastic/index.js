@@ -102,8 +102,22 @@ describe('indexing of xml files into elastic search', function () {
 
   it('returns documents from search', async function () {
     const res = await elasticClient.search(client, TEST_INDEX_PREFIX + 'sepost', 'compare OR better', {});
-    console.log(prettyjson.render(res));
+    // console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 3, 'Query returns proper number of hits');
     assert.equal(res.hits.hits[2]._source.Title, 'What questions should be definitely off-topic?', 'Expected post found');
+  });
+
+  it('returns answers for a post', async function () {
+    const res = await elasticClient.answers(client, TEST_INDEX_PREFIX + 'sepost', '7', {});
+    console.log(prettyjson.render(res));
+    assert.equal(res.hits.total, 2, 'Answer query returns proper number of hits');
+    assert(res.hits.hits.some(result => result._id == '9'), 'proper id of an answer found');
+  });
+
+  it('returns comments for a post', async function () {
+    const res = await elasticClient.comments(client, TEST_INDEX_PREFIX + 'secomment', '6', {});
+    console.log(prettyjson.render(res));
+    assert.equal(res.hits.total, 8, 'Comment query returns proper number of hits');
+    // assert(res.hits.hits.some(result => result._id == '9'), 'proper id of an answer found');
   });
 });

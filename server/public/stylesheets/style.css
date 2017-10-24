@@ -14,3 +14,23 @@ a {
 .highlight em {
   color: red;
 }
+
+/* stack exchange questions */
+.questionbody {
+  padding-left: 20pt;
+}
+.questiontitle {
+  background-color: #DDFFFF;
+}
+.comment {
+  padding-left: 40pt;
+}
+.comment p {
+  font-size: smaller;
+  margin: 0;
+  padding: 0;
+}
+.comment hr {
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}

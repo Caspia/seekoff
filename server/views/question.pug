@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+  hr
+  h2.questiontitle= question.Title
+  p <em><strong>Asked:</strong> !{question.CreatedFormatted} <strong>View Count:</strong> !{question.ViewCount || '0'} </em>
+  .questionbody !{question.Body}
+  .comment
+    for questionComment in questionComments
+      hr
+      p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted}</em>
+  for answer in answers
+    hr
+    p <em><strong>Answered:</strong> on !{answer._source.CreatedFormatted}</em>
+    .answerbody !{answer._source.Body}
+    .comment
+      for answerComment in answer._source.Comments
+        hr
+        p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted}</em>
+  if errors
+    ul
+      for error in errors
+        li!= error.msg || error
