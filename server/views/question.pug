@@ -4,20 +4,24 @@ block content
   h1= title
   hr
   h2.questiontitle= question.Title
-  p <em><strong>Asked:</strong> !{question.CreatedFormatted} <strong>View Count:</strong> !{question.ViewCount || '0'} </em>
-  .questionbody !{question.Body}
+  p <em><strong>Asked:</strong> !{question.CreatedFormatted} <strong>by</strong> !{question.DisplayName} <strong>View Count:</strong> !{question.ViewCount || '0'} </em>
+  .questionbody.hsmaller !{question.Body}
+  if question.Tags && question.Tags.split(' ').length
+    p
+    for tag in question.Tags.split(' ')
+      <span class='questiontag'>!{tag}</span><span>&nbsp&nbsp</span>
   .comment
     for questionComment in questionComments
       hr
-      p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted}</em>
+      p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted} by !{questionComment._source.DisplayName}</em>
   for answer in answers
     hr
-    p <em><strong>Answered:</strong> on !{answer._source.CreatedFormatted}</em>
-    .answerbody !{answer._source.Body}
+    p <em><strong>Answered:</strong> on !{answer._source.CreatedFormatted} <strong>by</strong> !{answer._source.DisplayName}</em>
+    .answerbody.hsmaller !{answer._source.Body}
     .comment
       for answerComment in answer._source.Comments
         hr
-        p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted}</em>
+        p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted} by !{answerCmment._source.DisplayName}</em>
   if errors
     ul
       for error in errors

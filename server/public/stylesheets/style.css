@@ -19,6 +19,15 @@ a {
 .questionbody {
   padding-left: 20pt;
 }
+.hsmaller h1 {
+  font-size: 20pt;
+}
+.hsmaller h2 {
+  font-size: 16pt;
+}
+.hsmaller h3 {
+  font-size: 16pt;
+}
 .questiontitle {
   background-color: #DDFFFF;
 }
@@ -33,4 +42,7 @@ a {
 .comment hr {
   margin-top: 5pt;
   margin-bottom: 5pt;
+}
+.questiontag {
+  background-color: #d0d0d0;
 }

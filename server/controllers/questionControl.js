@@ -46,6 +46,57 @@ exports.questionGet = async function (req, res, next) {
         );
       }));
 
+    // Get user display names for question, answers, and comments
+    const userIds = [];
+    userIds.push(question.docs[0]._source.OwnerUserId);
+    answers.hits.hits.forEach((hit) => {
+      if (!userIds.includes(hit._source.OwnerUserId)) {
+        userIds.push(hit._source.OwnerUserId);
+      }
+    });
+    questionComments.hits.hits.forEach((hit) => {
+      if (!userIds.includes(hit._source.UserId)) {
+        userIds.push(hit._source.UserId);
+      }
+    });
+    answersComments.forEach((answerComments) => {
+      answerComments.hits.hits.forEach((hit) => {
+        if (!userIds.includes(hit._source.UserId)) {
+          userIds.push(hit._source.UserId);
+        }
+      });
+    });
+
+    console.log('userIds is: ' + userIds);
+    // now get all users
+    const users = await elasticClient.getDocuments(
+      client,
+      'stackexchange_' + 'seuser',
+      'seuser',
+      userIds,
+    );
+    console.log('users:\n' + prettyjson.render(users));
+
+    // Map user id to display name for lookup
+    const nameMap = new Map();
+    users.docs.forEach((user) => {
+      nameMap.set(user._source.Id, user._source.DisplayName);
+    });
+
+    // Add DisplayName to questions, answers, and comments.
+    question.docs[0]._source.DisplayName = nameMap.get(question.docs[0]._source.OwnerUserId);
+    answers.hits.hits.forEach((hit) => {
+      hit._source.DisplayName = nameMap.get(hit._source.OwnerUserId);
+    });
+    questionComments.hits.hits.forEach((hit) => {
+      hit._source.DisplayName = nameMap.get(hit._source.UserId);
+    });
+    answersComments.forEach((answerComments) => {
+      answerComments.hits.hits.forEach((hit) => {
+        hit._source.DisplayName = nameMap.get(hit._source.UserId);
+      });
+    });
+
     // Format dates for display
     question.docs[0]._source.CreatedFormatted =
       moment(question.docs[0]._source.CreationDate).format('LL');
