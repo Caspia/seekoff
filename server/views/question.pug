@@ -1,28 +1,56 @@
 extends layout
 
 block content
-  h1= title
-  hr
-  h2.questiontitle= question.Title
-  p <em><strong>Asked:</strong> !{question.CreatedFormatted} <strong>by</strong> !{question.DisplayName} <strong>View Count:</strong> !{question.ViewCount || '0'} </em>
-  .questionbody.hsmaller !{question.Body}
-  if question.Tags && question.Tags.split(' ').length
-    p
-    for tag in question.Tags.split(' ')
-      <span class='questiontag'>!{tag}</span><span>&nbsp&nbsp</span>
-  .comment
-    for questionComment in questionComments
-      hr
-      p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted} by !{questionComment._source.DisplayName}</em>
-  for answer in answers
-    hr
-    p <em><strong>Answered:</strong> on !{answer._source.CreatedFormatted} <strong>by</strong> !{answer._source.DisplayName}</em>
-    .answerbody.hsmaller !{answer._source.Body}
-    .comment
-      for answerComment in answer._source.Comments
+  .container
+    .row
+      .col-md-12
+        h1= title
         hr
-        p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted} by !{answerCmment._source.DisplayName}</em>
-  if errors
-    ul
-      for error in errors
-        li!= error.msg || error
+    .row
+      .col-md-9
+        h2.questiontitle= question.Title
+        p
+          em
+            strong Asked:&nbsp
+            != question.CreatedFormatted 
+            strong &nbsp by:&nbsp
+            != question.DisplayName
+        .postbody.hsmaller !{question.Body}
+        .comment
+          for questionComment in questionComments
+            hr
+            p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted} by !{questionComment._source.DisplayName}</em>
+        for answer in answers
+          hr
+          p <em><strong>Answered:</strong> !{answer._source.CreatedFormatted} <strong>by</strong> !{answer._source.DisplayName}</em>
+          .postbody.hsmaller !{answer._source.Body}
+          .comment
+            for answerComment in answer._source.Comments
+              hr
+              p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted} by !{answerComment._source.DisplayName}</em>
+        if errors
+          ul
+            for error in errors
+              li!= error.msg || error
+      .col-md-3
+        p
+          em
+            strong View Count:&nbsp
+            != question.ViewCount || '0'
+        p
+          em
+            if question.Tags && question.Tags.split(' ').length
+              strong Tags:&nbsp
+              for tag in question.Tags.split(' ')
+                span.questiontag= tag
+                span &nbsp&nbsp
+        if linkedPostsValues.length
+          hr
+          h3 Linked
+          for post in linkedPostsValues
+            p <a class='postlink' href=!{'/question/' + post.Id}>!{post.Title}</a>
+        if relatedPostsValues.length
+          hr
+          h3 Related
+          for post in relatedPostsValues
+            p <a class='postlink' href=!{'/question/' + post.Id}>!{post.Title}</a>

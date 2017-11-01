@@ -16,7 +16,7 @@ block content
   if renderResults
     each result in renderResults
       if result.title
-        h3= result.title
+        <a class='searchlink' href=!{'/question/' + result.questionId}><h3>!{result.title}</h3></a>
         .highlight
           p !{result.highlight}
       else

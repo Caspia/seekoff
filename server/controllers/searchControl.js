@@ -16,7 +16,6 @@ exports.searchGet = async function (req, res, next) {
   try {
     console.log('search term is ' + req.query.search_term);
     if (req.query.search_term) {
-      console.log('trying elastic search');
       const searchResults = await elasticClient.search(
         client,
         'stackexchange_' + 'sepost',
@@ -32,7 +31,7 @@ exports.searchGet = async function (req, res, next) {
       if (hitResults && hitResults.length) {
         renderResults = hitResults.map((hitResult) => {
           const renderResult = {};
-          // console.log('hitResult: ' + prettyjson.render(hitResult));
+          console.log('hitResult: ' + prettyjson.render(hitResult));
           if (hitResult._source) {
             // Get a title, using Body if Title missing
             if (hitResult._source.Title) {
@@ -49,16 +48,18 @@ exports.searchGet = async function (req, res, next) {
             if (hitResult.highlight) {
               renderResult.highlight = '';
               for (const field in hitResult.highlight) {
-                console.log('dirty highlight for ' + field + ' is !!!!!\n' + hitResult.highlight[field] + '\n!!!!!');
-                console.log('clean highlight for ' + field + ' is !!!!!\n' + sanitizeHtml(hitResult.highlight[field]) + '\n!!!!!');
                 renderResult.highlight += sanitizeHtml(hitResult.highlight[field]);
               }
             } else {
               console.log('no highlightfound');
             }
+
+            // Get a link to the results
+            renderResult.questionId = hitResult._source.ParentId || hitResult._source.Id;
           } else {
             renderResult.title = 'Unparsable result';
           }
+          console.log('renderResult:\n' + prettyjson.render(renderResult));
           return renderResult;
         });
       }

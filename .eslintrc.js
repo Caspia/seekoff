@@ -21,7 +21,8 @@ module.exports = {
         "imports": "always-multiline",
         "exports": "always-multiline",
         "functions": "ignore",
-      }]
+      }],
+      "spaced-comment": "off"
     },
     root: true,
 };

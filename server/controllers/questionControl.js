@@ -1,18 +1,18 @@
 /**
- * Process requests from searchs page '/search'
+ * Process requests from questions page '/question'
  */
 
 const path = require('path');
 const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
-const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
+const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const moment = require('moment');
 
 const client = elasticClient.client;
 
+// Get database results that only depend on question id
 exports.questionGet = async function (req, res, next) {
   try {
-    console.log('postid term is ' + req.params.id);
     const questionResults = await Promise.all([
       elasticClient.getDocuments(
         client,
@@ -32,8 +32,20 @@ exports.questionGet = async function (req, res, next) {
         req.params.id,
         {},
       ),
+      elasticClient.links(
+        client,
+        'stackexchange_' + 'sepostlink',
+        req.params.id,
+        {},
+      ),
+      elasticClient.related(
+        client,
+        'stackexchange_' + 'sepostlink',
+        req.params.id,
+        {},
+      ),
     ]);
-    const [question, answers, questionComments] = questionResults;
+    const [question, answers, questionComments, linked, related] = questionResults;
 
     // Get comments on answers
     const answersComments = await Promise.all(
@@ -45,6 +57,54 @@ exports.questionGet = async function (req, res, next) {
           {},
         );
       }));
+
+    // Get linked posts
+    const linkedPosts = linked.hits.hits.length
+      ? await Promise.all(
+        linked.hits.hits.map((hit) => {
+          return elasticClient.getDocuments(
+            client,
+            'stackexchange_' + 'sepost',
+            'sepost',
+            [hit._source.RelatedPostId],
+          );
+        }))
+      : [];
+
+    // Process linked posts, removing not found posts
+    const linkedPostsValues = [];
+    linkedPosts.forEach((post) => {
+      if (post.docs[0]._source) {
+        linkedPostsValues.push({
+          Id: post.docs[0]._id,
+          Title: post.docs[0]._source.Title,
+        });
+      }
+    });
+
+    // Get related posts
+    const relatedPosts = related.hits.hits.length
+      ? await Promise.all(
+        related.hits.hits.map((hit) => {
+          return elasticClient.getDocuments(
+            client,
+            'stackexchange_' + 'sepost',
+            'sepost',
+            [hit._source.PostId],
+          );
+        }))
+      : [];
+
+    // Process related posts, removing not found posts
+    const relatedPostsValues = [];
+    relatedPosts.forEach((post) => {
+      if (post.docs[0]._source) {
+        relatedPostsValues.push({
+          Id: post.docs[0]._id,
+          Title: post.docs[0]._source.Title,
+        });
+      }
+    });
 
     // Get user display names for question, answers, and comments
     const userIds = [];
@@ -67,7 +127,6 @@ exports.questionGet = async function (req, res, next) {
       });
     });
 
-    console.log('userIds is: ' + userIds);
     // now get all users
     const users = await elasticClient.getDocuments(
       client,
@@ -75,7 +134,6 @@ exports.questionGet = async function (req, res, next) {
       'seuser',
       userIds,
     );
-    console.log('users:\n' + prettyjson.render(users));
 
     // Map user id to display name for lookup
     const nameMap = new Map();
@@ -116,15 +174,15 @@ exports.questionGet = async function (req, res, next) {
     answers.hits.hits.forEach((hit, index) => {
       hit._source.Comments = answersComments[index].hits.hits;
     });
-    console.log('question:\n' + prettyjson.render(question.docs[0]._source));
-    console.log('answers:\n' + prettyjson.render(answers));
-    console.log('questionComments:\n', prettyjson.render(questionComments));
-    // console.log('answersComments:\n' + prettyjson.render(answersComments));
+    
+    // show the result
     res.render('question', {
       title: 'Stack Caspia question detail',
       question: question.docs[0]._source,
       answers: answers.hits.hits,
       questionComments: questionComments.hits.hits,
+      linkedPostsValues,
+      relatedPostsValues,
     });
   } catch (err) {
     console.log('Error in searchControl get: ' + err);

@@ -7,7 +7,10 @@ a {
   color: #00B7FF;
 }
 
-/* highlights of hit text */
+/* searches */
+.searchlink h3 {
+  color: black;
+}
 .highlight {
   background-color: #f0f0ff;
 }
@@ -16,8 +19,8 @@ a {
 }
 
 /* stack exchange questions */
-.questionbody {
-  padding-left: 20pt;
+.postbody {
+  padding-left: 10pt;
 }
 .hsmaller h1 {
   font-size: 20pt;
@@ -29,10 +32,10 @@ a {
   font-size: 16pt;
 }
 .questiontitle {
-  background-color: #DDFFFF;
+  background-color: #F0F0FF;
 }
 .comment {
-  padding-left: 40pt;
+  padding-left: 20pt;
 }
 .comment p {
   font-size: smaller;
@@ -44,5 +47,5 @@ a {
   margin-bottom: 5pt;
 }
 .questiontag {
-  background-color: #d0d0d0;
+  background-color: #e0e0d0;
 }

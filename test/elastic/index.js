@@ -60,6 +60,12 @@ const TEST_RESPONSES = {
       Location: 'Where the shadows lie',
     },
   ],
+  sepostlink: [
+    {
+      Id: '41',
+      RelatedPostId: '7',
+    },
+  ],
 };
 
 describe('indexing of xml files into elastic search', function () {
@@ -109,15 +115,27 @@ describe('indexing of xml files into elastic search', function () {
 
   it('returns answers for a post', async function () {
     const res = await elasticClient.answers(client, TEST_INDEX_PREFIX + 'sepost', '7', {});
-    console.log(prettyjson.render(res));
+    // console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 2, 'Answer query returns proper number of hits');
     assert(res.hits.hits.some(result => result._id == '9'), 'proper id of an answer found');
   });
 
   it('returns comments for a post', async function () {
     const res = await elasticClient.comments(client, TEST_INDEX_PREFIX + 'secomment', '6', {});
-    console.log(prettyjson.render(res));
+    // console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 8, 'Comment query returns proper number of hits');
     // assert(res.hits.hits.some(result => result._id == '9'), 'proper id of an answer found');
+  });
+
+  it('returns links for a post', async function () {
+    const res = await elasticClient.links(client, TEST_INDEX_PREFIX + 'sepostlink', '4', {});
+    // console.log(prettyjson.render(res));
+    assert.equal(res.hits.total, 2, 'Limits query returns proper number of hits');
+  });
+
+  it('returns related for a post', async function () {
+    const res = await elasticClient.related(client, TEST_INDEX_PREFIX + 'sepostlink', '1', {});
+    console.log(prettyjson.render(res));
+    assert.equal(res.hits.total, 2, 'Related query returns proper number of hits');
   });
 });
