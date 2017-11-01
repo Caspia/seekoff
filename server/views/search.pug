@@ -13,6 +13,13 @@ block content
     ul
       for error in errors
         li!= error.msg || error
+  p
+    strong Total Hits:
+    span !{totalHits};
+  p
+    if previousUrl
+      span <a href=!{previousUrl}>Previous </a>  
+    span <a href=!{nextUrl}>Next</a>
   if renderResults
     each result in renderResults
       if result.title
@@ -21,4 +28,7 @@ block content
           p !{result.highlight}
       else
         p= JSON.stringify(result)
-    
+  p
+    if previousUrl
+      span <a href=!{previousUrl}>Previous </a>  
+    span <a href=!{nextUrl}>Next</a>
