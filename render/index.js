@@ -1,11 +1,12 @@
 /**
- * UI methods for the main window.
+ * UI methods for the main window in the rendered HTML.
  * @file
  */
 
 const mainMsg = require('./main/mainMsg');
-const {ipcRenderer} = require('electron');
+const {ipcRenderer, ipcMain} = require('electron');
 const pug = require('pug');
+const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 
 /**
  * Set text in the status area of UI
@@ -17,13 +18,25 @@ function setStatusMsg(msg) {
 }
 
 window.onload = () => {
-  const thefooter = document.getElementById('statusfooter');
   const thebody = document.getElementById('mainbody');
-  mainMsg.onStatus(msg => {
-    thefooter.innerText = msg;
-    return null;
+
+  // Setup event listeners with actions
+
+  handleEvent('doit', (data) => {
+    console.log('event doit received data is\n' + prettyFormat(data));
+    return 'I am doit results';
   });
-  mainMsg.onBody(msg => {
+
+  handleEvent('getTags', () => {
+    return ['airbus'];
+  });
+
+  ipcRenderer.on('status', (event, msg) => {
+    document.getElementById('statusfooter').innerText = msg;
+  });
+
+  // setup listener to render the body
+  onBody(msg => {
     thebody.innerHTML = msg;
     return null;
   });
@@ -53,6 +66,9 @@ function onMenuSelection() {
         commandElasticPing();
         break;
       }
+      case 'count-tags': {
+        console.log('I am count-tags');
+      }
     }
   });
 
@@ -67,4 +83,41 @@ function onMenuSelection() {
 
 function commandElasticPing() {
   ipcRenderer.send('elastic-request', 'ping');
+}
+
+/**
+ * Set response to a status message
+ * (use in Renderer process)
+ * @param {Function(String)} f function to process body
+ */
+function onBody(f) {
+  ipcRenderer.on('body', (event, html, onReady) => {
+    f(html);
+    if (onReady) {
+      onReady();
+    }
+  });
+}
+
+/**
+ * @typedef EventObject
+ * @see "Event object" in https://electron.atom.io/docs/api/ipc-main/
+ */
+/**
+ * Setup listener for Main process events and handle
+ * @param {string} eventName - Name of the event 
+ * @param {function<EventObject, data>} f - Function to handle the "data" sent by the main process,
+ *                                          returns opaque object to send to main process
+ */
+function handleEvent(eventName, f) {
+  ipcRenderer.on(eventName, (event, data) => {
+    let result;
+    let error;
+    try {
+      result = f(data);
+    } catch (err) {
+      error = err;
+    }
+    event.sender.send(eventName + '-response', result, error);
+  });
 }

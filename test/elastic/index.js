@@ -70,6 +70,7 @@ const TEST_RESPONSES = {
 
 describe('indexing of xml files into elastic search', function () {
   let client;
+  this.timeout(10000);
   before(async function () {
     client = elasticClient.makeClient({host: TEST_HOST});
     for (const type in elasticClient.typeMappings) {

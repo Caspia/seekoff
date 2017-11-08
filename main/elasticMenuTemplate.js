@@ -25,22 +25,22 @@ const elasticMenuTemplate = {
     { label: 'Get Indices',
       click: function () {
         getIndices();
-        /*
+        /* */
         client.indices.get({index: '*'})
           .then(result => {
             let indicies = [];
             for (const prop in result) {
               indicies.push(prop);
-              console.log('prop: (' + typeof prop + ') ' + prop);
+              //console.log('prop: (' + typeof prop + ') ' + prop);
             }
             const pugHtml = pug.renderFile('views/indicies.pug', {indicies});
-            console.log('pugResult: ' + pugHtml);
+            //console.log('pugResult: ' + pugHtml);
             mainMsg.sendBody(pugHtml);
           })
           .catch(err => {
             console.log('Error: ' + err);
           });
-        */
+        /* */
       }
     },
     {
