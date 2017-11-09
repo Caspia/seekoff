@@ -13,16 +13,16 @@ require('electron-debug')();
 // prevent window being garbage collected
 let mainWindow;
 
-function onClosed () {
+function onClosed() {
   // dereference the window
   // for multiple windows store them in an array
   mainWindow = null;
 }
 
-function createMainWindow () {
+function createMainWindow() {
   const win = new BrowserWindow({
     width: 1366,
-    height: 768
+    height: 768,
   });
 
   win.loadURL(`file://${__dirname}/index.html`);

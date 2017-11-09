@@ -20,7 +20,7 @@ const TEST_RESPONSES = {
   sepost: [
     {
       Id: '1',
-      Title: 'What questions should be definitely off-topic?',
+      Title: 'What questions should be definitely off-topic',
       Tags: ' discussion  scope  questions ',
     },
     {
@@ -111,7 +111,7 @@ describe('indexing of xml files into elastic search', function () {
     const res = await elasticClient.search(client, TEST_INDEX_PREFIX + 'sepost', 'compare OR better', {});
     // console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 3, 'Query returns proper number of hits');
-    assert.equal(res.hits.hits[2]._source.Title, 'What questions should be definitely off-topic?', 'Expected post found');
+    assert.equal(res.hits.hits[2]._source.Title, 'What questions should be definitely off-topic', 'Expected post found');
   });
 
   it('returns answers for a post', async function () {

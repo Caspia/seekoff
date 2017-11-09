@@ -9,8 +9,9 @@ const {INDEX_PREFIX} = require('../lib/constants');
 const {client} = require('../lib/elasticClient');
 const {getQuestionIdsByTags} = require('../lib/elasticReader');
 const mainMsg = require('../main/mainMsg');
-const pug = require('pug');
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
+const path = require('path');
+const fs = require('fs-extra');
 
 const fileMenuTemplate = {
   label: 'File',
@@ -18,7 +19,9 @@ const fileMenuTemplate = {
     {
       label: 'Test',
       click: async () => {
-        await mainMsg.promiseRenderEvent('doit', 'I am me');
+        await mainMsg.promiseRenderEvent(
+          'progress',
+          {description: 'the bar', valuenow: '90', textresult: 'the result'});
         console.log('Done with File Test menu item');
       },
     },
@@ -47,17 +50,38 @@ const fileMenuTemplate = {
     {
       label: 'Count tags in file',
       click: async () => {
+
+        // Update rendered display with progress information
+        function onProgress(linesRead, totalHits, percentDone) {
+          console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
+          mainMsg.promiseRenderEvent('progress', {
+            description: '% Completion getting post ids by tag',
+            valuenow: String(percentDone),
+            textresult: `Total hits: ${totalHits}, Records processed: ${linesRead}`,
+          });
+        }
+
+        // Ask the user for Posts.xml file to read
         const files = dialog.showOpenDialog({
           title: 'Get file to process',
           properties: ['openFile']});
-        console.log('File is ' + JSON.stringify(files));
         try {
+
+          // Ask user for tags.
           const tags = await mainMsg.promiseRenderEvent('getTags', null);
-          console.log('tags are ' + prettyFormat(tags));
+
+          // Search for question ids matching the tags.
           await mainMsg.promiseRenderEvent('setbodytext', 'Searching ...');
-          const postIds = await getQuestionIdsByTags(files ? files[0] : null, tags);
+          const postIds = await getQuestionIdsByTags(files ? files[0] : null, tags, onProgress);
           console.log('Found ' + postIds.length + ' matching posts');
           await mainMsg.promiseRenderEvent('setbodytext', `Found ${postIds.length} matching posts`);
+
+          // Write the results to a file in the same directory
+          const fileDirectory = path.dirname(files[0]);
+          await fs.writeFile(path.join(fileDirectory, 'Questions.json'), JSON.stringify({
+            tags,
+            postIds,
+          }));
         } catch (err) {
           console.log('Error getting question ids by tag: ' + prettyFormat(err));
         }

@@ -45,15 +45,14 @@ function sendBody(html, onReady) {
 /**
  * Send data to the render process for action
  * @param {string} eventName - Name of the event. Return event `${eventName}-response` expected.
- * @param {object} data - Opaque object to send to renderer
- * @return (object} - Opaque object returned from the renderer
+ * @param {any} data - Opaque data to send to renderer
+ * @return (any} - Opaque item returned from the renderer
  */
 async function promiseRenderEvent(eventName, data) {
   return new Promise((resolve, reject) => {
     ipcMain.once(eventName + '-response', (event, result, error) => {
       error ? reject(error) : resolve(result);
     });
-    console.log('sending event ' + eventName);
     BrowserWindow.fromId(global.mainWindowId).webContents.send(eventName, data);
   });
 }

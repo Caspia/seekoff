@@ -25,7 +25,23 @@ window.onload = () => {
 
   handleEvent('doit', async (data) => {
     console.log('event doit received data is\n' + prettyFormat(data));
+    thebody.innerHTML = pug.renderFile('views/progress.pug', {
+      description: '% complete',
+      valuenow: '40',
+      textresult: 'I am result',
+      progresswidth: 'width:40%',
+    });
     return 'I am doit results';
+  });
+
+  handleEvent('progress', async (data) => {
+    thebody.innerHTML = pug.renderFile(
+      'views/progress.pug', {
+        description: data.description,
+        valuenow: data.valuenow,
+        textresult: data.textresult,
+        progresswidth: `width:${data.valuenow}%`,
+      });
   });
 
   handleEvent('getTags', async () => {
@@ -35,12 +51,11 @@ window.onload = () => {
     await DOMMutation;
     const buttonElement = document.getElementById('promptbutton');
 
-    // wait for form result
+    // wait for form result, returning array of tags
     return new Promise((resolve, reject) => {
       function onClick(event) {
         event.preventDefault();
         const inputElement = document.getElementById('name');
-        console.log('input element value is ' + inputElement.value);
         buttonElement.removeEventListener('click', onClick);
         resolve(inputElement.value.split(' '));
       }
