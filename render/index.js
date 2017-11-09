@@ -7,6 +7,7 @@ const mainMsg = require('./main/mainMsg');
 const {ipcRenderer, ipcMain} = require('electron');
 const pug = require('pug');
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
+const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
 
 /**
  * Set text in the status area of UI
@@ -22,13 +23,33 @@ window.onload = () => {
 
   // Setup event listeners with actions
 
-  handleEvent('doit', (data) => {
+  handleEvent('doit', async (data) => {
     console.log('event doit received data is\n' + prettyFormat(data));
     return 'I am doit results';
   });
 
-  handleEvent('getTags', () => {
-    return ['airbus'];
+  handleEvent('getTags', async () => {
+    // render the tags form
+    const DOMMutation = promiseDOMMutation();
+    thebody.innerHTML = pug.renderFile('views/prompt.pug', {label: 'Enter space separated list of tags'});
+    await DOMMutation;
+    const buttonElement = document.getElementById('promptbutton');
+
+    // wait for form result
+    return new Promise((resolve, reject) => {
+      function onClick(event) {
+        event.preventDefault();
+        const inputElement = document.getElementById('name');
+        console.log('input element value is ' + inputElement.value);
+        buttonElement.removeEventListener('click', onClick);
+        resolve(inputElement.value.split(' '));
+      }
+      buttonElement.addEventListener('click', onClick);
+    });
+  });
+
+  handleEvent('setbodytext', async function (text) {
+    thebody.innerHTML = text;
   });
 
   ipcRenderer.on('status', (event, msg) => {
@@ -110,14 +131,30 @@ function onBody(f) {
  *                                          returns opaque object to send to main process
  */
 function handleEvent(eventName, f) {
-  ipcRenderer.on(eventName, (event, data) => {
+  ipcRenderer.on(eventName, async (event, data) => {
     let result;
     let error;
     try {
-      result = f(data);
+      result = await f(data);
     } catch (err) {
       error = err;
     }
     event.sender.send(eventName + '-response', result, error);
+  });
+}
+
+/**
+ * returns a Promise that resolves when a DOM mutation completes.
+ */
+function promiseDOMMutation() {
+  return new Promise((resolve, reject) => {
+    const observer = new MutationObserver((mutations) => {
+      observer.disconnect();
+      resolve();
+    });
+    const thebody = document.getElementById('mainbody');
+    observer.observe(
+      thebody,
+      { attributes: true, childList: true, characterData: true, subtree: true });
   });
 }

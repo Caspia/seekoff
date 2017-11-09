@@ -40,7 +40,7 @@ const fileMenuTemplate = {
           await readFiles(files ? files[0] : null, client, INDEX_PREFIX);
           console.log('Done reading files');
         } catch (err) {
-          console.log('Error indexing files: ' + err);
+          console.log('Error indexing files: ' + prettyFormat(err));
         }
       },
     },
@@ -54,10 +54,12 @@ const fileMenuTemplate = {
         try {
           const tags = await mainMsg.promiseRenderEvent('getTags', null);
           console.log('tags are ' + prettyFormat(tags));
+          await mainMsg.promiseRenderEvent('setbodytext', 'Searching ...');
           const postIds = await getQuestionIdsByTags(files ? files[0] : null, tags);
           console.log('Found ' + postIds.length + ' matching posts');
+          await mainMsg.promiseRenderEvent('setbodytext', `Found ${postIds.length} matching posts`);
         } catch (err) {
-          console.log('Error getting question ids by tag: ' + err);
+          console.log('Error getting question ids by tag: ' + prettyFormat(err));
         }
       },
     },
