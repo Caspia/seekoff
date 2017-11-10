@@ -7,9 +7,10 @@ const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const elasticClient = require('../../lib/elasticClient');
 
-const { readFiles, getQuestionIdsByTags } = require('../../lib/elasticReader');
+const {getQuestionIdsByTags, indexPostsFromPostIds} = require('../../lib/elasticReader');
 
 const postsPath = path.join(__dirname, '..', 'data', 'Posts.xml');
+const questionsPath = path.join(__dirname, '..', 'data', 'Questions.json');
 const TEST_HOST = 'localhost:9200';
 const TEST_INDEX_PREFIX = 'testindex_';
 
@@ -44,5 +45,19 @@ describe('indexing of xml files works by tag', function () {
     assert(postIds.includes(3), 'Matches Id 3');
     assert(postIds.includes(1), 'Matches Id 1');
     assert(postIds.includes(7), 'Matches Id 7');
+  });
+
+  it('indexes posts using Questions.json', async function () {
+    const client = elasticClient.makeClient({host: TEST_HOST});
+    await indexPostsFromPostIds(questionsPath, client, TEST_INDEX_PREFIX);
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'sepost');
+    const res = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepost');
+    assert.equal(res.hits.total, 5, 'Indexed 5 items');
+
+    const indexedPosts = res.hits.hits.map(hit => hit._id);
+    const questionIds = ['1', '2', '4'];
+    const answerIds = ['6', '8'];
+    assert(questionIds.every(id => indexedPosts.includes(id)), 'All questions indexed');
+    assert(answerIds.every(id => indexedPosts.includes(id)), 'All answers indexed');
   });
 });
