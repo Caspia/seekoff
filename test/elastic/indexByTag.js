@@ -7,7 +7,7 @@ const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const elasticClient = require('../../lib/elasticClient');
 
-const {getQuestionIdsByTags, indexPostsFromPostIds} = require('../../lib/elasticReader');
+const {getQuestionIdsByTags, indexFromPostIds} = require('../../lib/elasticReader');
 
 const postsPath = path.join(__dirname, '..', 'data', 'Posts.xml');
 const questionsPath = path.join(__dirname, '..', 'data', 'Questions.json');
@@ -49,15 +49,49 @@ describe('indexing of xml files works by tag', function () {
 
   it('indexes posts using Questions.json', async function () {
     const client = elasticClient.makeClient({host: TEST_HOST});
-    await indexPostsFromPostIds(questionsPath, client, TEST_INDEX_PREFIX);
-    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'sepost');
-    const res = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepost');
-    assert.equal(res.hits.total, 5, 'Indexed 5 items');
+    for (const type in elasticClient.nameMappings) {
+      await indexFromPostIds(questionsPath, client, type, TEST_INDEX_PREFIX);
+    }
 
-    const indexedPosts = res.hits.hits.map(hit => hit._id);
+    // check Posts.xml
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'sepost');
+    const posts = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepost');
+    assert.equal(posts.hits.total, 5, 'Indexed correct number of posts');
+    const indexedPosts = posts.hits.hits.map(hit => hit._id);
     const questionIds = ['1', '2', '4'];
     const answerIds = ['6', '8'];
+    // Check using exists
+    for (const id of questionIds) {
+      assert(await client.exists({
+        index: TEST_INDEX_PREFIX + 'sepost',
+        type: 'sepost',
+        id,
+      }), 'questions exist using client.exists');
+    }
     assert(questionIds.every(id => indexedPosts.includes(id)), 'All questions indexed');
     assert(answerIds.every(id => indexedPosts.includes(id)), 'All answers indexed');
+
+    // check Comments.xml
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'secomment');
+    const comments = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'secomment');
+    const commentIds = [
+      '1', '2', '3', '5', '27', '30', '32', '33', '34', '39', '40', '58', '60',
+      '61', '63', '66', '78'];
+    assert.equal(comments.hits.total, commentIds.length, 'Indexed correct number of comments');
+    const indexedComments = comments.hits.hits.map(hit => hit._id);
+    assert(commentIds.every(id => indexedComments.includes(id)), 'Indexed all expected comments');
+
+    // check users
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'seuser');
+    const users = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'seuser');
+    assert.equal(6, users.hits.total, 'Found correct number of users');
+
+    // check postlinks
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'sepostlink');
+    const postlinks = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepostlink');
+    const postlinkIds = ['1', '41', '82', '110'];
+    const indexedPostlinks = postlinks.hits.hits.map(hit => hit._id);
+    assert(postlinkIds.every(id => indexedPostlinks.includes(id)), 'Indexed all expected postlinks');
+    assert.equal(postlinkIds.length, postlinks.hits.total, 'Found correct number of postlinks');
   });
 });

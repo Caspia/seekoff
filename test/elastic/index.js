@@ -136,7 +136,6 @@ describe('indexing of xml files into elastic search', function () {
 
   it('returns related for a post', async function () {
     const res = await elasticClient.related(client, TEST_INDEX_PREFIX + 'sepostlink', '1', {});
-    console.log(prettyjson.render(res));
     assert.equal(res.hits.total, 2, 'Related query returns proper number of hits');
   });
 });

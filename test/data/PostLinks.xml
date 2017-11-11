@@ -4,4 +4,6 @@
   <row Id="41" CreationDate="2013-05-23T00:19:14.953" PostId="4" RelatedPostId="7" LinkTypeId="3" />
   <row Id="82" CreationDate="2013-05-23T11:31:39.787" PostId="7" RelatedPostId="1" LinkTypeId="1" />
   <row Id="110" CreationDate="2013-05-23T20:01:48.560" PostId="3" RelatedPostId="1" LinkTypeId="1" />
+  <row Id="111" CreationDate="2013-05-23T20:01:48.560" PostId="3" RelatedPostId="7" LinkTypeId="1" />
+  <row Id="112" CreationDate="2013-05-23T20:01:48.560" PostId="7" RelatedPostId="3" LinkTypeId="3" />
 </postlinks>
