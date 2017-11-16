@@ -9,8 +9,10 @@ const sanitizeHtml = require('sanitize-html');
 const canParam = require('can-param');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
+const {INDEX_PREFIX} = require(path.join(libPath, 'constants'));
 
 const client = elasticClient.client;
+const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
 
 exports.searchGet = async function (req, res, next) {
   try {
@@ -21,7 +23,7 @@ exports.searchGet = async function (req, res, next) {
         : {};
       const searchResults = await elasticClient.search(
         client,
-        'stackexchange_' + 'sepost',
+        indexPrefix + 'sepost',
         req.query.search_term,
         parms,
       );

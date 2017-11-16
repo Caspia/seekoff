@@ -7,8 +7,10 @@ const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const moment = require('moment');
+const {INDEX_PREFIX} = require(path.join(libPath, 'constants'));
 
 const client = elasticClient.client;
+const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
 
 // Get database results that only depend on question id
 exports.questionGet = async function (req, res, next) {
@@ -16,31 +18,31 @@ exports.questionGet = async function (req, res, next) {
     const questionResults = await Promise.all([
       elasticClient.getDocuments(
         client,
-        'stackexchange_' + 'sepost',
+        indexPrefix + 'sepost',
         'sepost',
         [req.params.id],
       ),
       elasticClient.answers(
         client,
-        'stackexchange_' + 'sepost',
+        indexPrefix + 'sepost',
         req.params.id,
         {},
       ),
       elasticClient.comments(
         client,
-        'stackexchange_' + 'secomment',
+        indexPrefix + 'secomment',
         req.params.id,
         {},
       ),
       elasticClient.links(
         client,
-        'stackexchange_' + 'sepostlink',
+        indexPrefix + 'sepostlink',
         req.params.id,
         {},
       ),
       elasticClient.related(
         client,
-        'stackexchange_' + 'sepostlink',
+        indexPrefix + 'sepostlink',
         req.params.id,
         {},
       ),
@@ -52,7 +54,7 @@ exports.questionGet = async function (req, res, next) {
       answers.hits.hits.map((hit) => {
         return elasticClient.comments(
           client,
-          'stackexchange_' + 'secomment',
+          indexPrefix + 'secomment',
           hit._source.Id,
           {},
         );
@@ -64,7 +66,7 @@ exports.questionGet = async function (req, res, next) {
         linked.hits.hits.map((hit) => {
           return elasticClient.getDocuments(
             client,
-            'stackexchange_' + 'sepost',
+            indexPrefix + 'sepost',
             'sepost',
             [hit._source.RelatedPostId],
           );
@@ -88,7 +90,7 @@ exports.questionGet = async function (req, res, next) {
         related.hits.hits.map((hit) => {
           return elasticClient.getDocuments(
             client,
-            'stackexchange_' + 'sepost',
+            indexPrefix + 'sepost',
             'sepost',
             [hit._source.PostId],
           );
@@ -130,7 +132,7 @@ exports.questionGet = async function (req, res, next) {
     // now get all users
     const users = await elasticClient.getDocuments(
       client,
-      'stackexchange_' + 'seuser',
+      indexPrefix + 'seuser',
       'seuser',
       userIds,
     );
