@@ -4,7 +4,7 @@
  */
 
 const {BrowserWindow, dialog} = require('electron');
-const {readFiles} = require('../lib/elasticReader');
+const {readFiles, indexFromPostIds} = require('../lib/elasticReader');
 const {INDEX_PREFIX} = require('../lib/constants');
 const {client} = require('../lib/elasticClient');
 const {getQuestionIdsByTags} = require('../lib/elasticReader');
@@ -35,22 +35,52 @@ const fileMenuTemplate = {
     {
       label: 'Index Directory',
       click: async () => {
+        let currentType;
+
+        // Update rendered display with progress information
+        function onProgress(linesRead, totalHits, percentDone) {
+          console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
+          mainMsg.promiseRenderEvent('progress', {
+            description: '% Completion indexing ' + currentType,
+            valuenow: String(percentDone),
+            textresult: `Records Indexed: ${totalHits}, Records processed: ${linesRead}`,
+          });
+        }
+
         const files = dialog.showOpenDialog({
           title: 'Get directory to process',
           properties: ['openDirectory']});
         console.log('Directories are ' + JSON.stringify(files));
-        try {
-          await readFiles(files ? files[0] : null, client, INDEX_PREFIX);
-          console.log('Done reading files');
-        } catch (err) {
-          console.log('Error indexing files: ' + prettyFormat(err));
+
+        // If the directory has a Questions.json file, we will use that
+        // to limit indexed posts.
+        const questionsPath = path.join(files[0], 'Questions.json');
+        const hasQuestions = await fs.exists(questionsPath);
+        console.log('Found Questions? ' + hasQuestions);
+
+        if (hasQuestions) {
+          // Limit indexing using the questions file. sepost must be first.
+          // const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
+          const types = ['sepostlink'];
+          for (const type of types) {
+            currentType = type;
+            console.log('indexing ' + type);
+            await indexFromPostIds(questionsPath, client, type, INDEX_PREFIX, onProgress);
+          }
+          await mainMsg.promiseRenderEvent('setbodytext', `Done indexing directory ${files[0]}`);
+        } else {
+          try {
+            await readFiles(files ? files[0] : null, client, INDEX_PREFIX);
+          } catch (err) {
+            console.log('Error indexing files: ' + prettyFormat(err));
+          }
         }
+        console.log('Done reading files');
       },
     },
     {
       label: 'Count tags in file',
       click: async () => {
-
         // Update rendered display with progress information
         function onProgress(linesRead, totalHits, percentDone) {
           console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
@@ -66,7 +96,6 @@ const fileMenuTemplate = {
           title: 'Get file to process',
           properties: ['openFile']});
         try {
-
           // Ask user for tags.
           const tags = await mainMsg.promiseRenderEvent('getTags', null);
 

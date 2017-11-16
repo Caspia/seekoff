@@ -15,7 +15,6 @@ const client = elasticClient.client;
 exports.searchGet = async function (req, res, next) {
   try {
     console.log('search term is ' + req.query.search_term);
-    console.log('from is ' + req.query.from);
     if (req.query.search_term) {
       const parms = req.query.from
         ? {from: parseInt(req.query.from, 10)}
