@@ -112,18 +112,18 @@ exports.questionGet = async function (req, res, next) {
     const userIds = [];
     userIds.push(question.docs[0]._source.OwnerUserId);
     answers.hits.hits.forEach((hit) => {
-      if (!userIds.includes(hit._source.OwnerUserId)) {
+      if (hit._source.OwnerUserId && !userIds.includes(hit._source.OwnerUserId)) {
         userIds.push(hit._source.OwnerUserId);
       }
     });
     questionComments.hits.hits.forEach((hit) => {
-      if (!userIds.includes(hit._source.UserId)) {
+      if (hit._source.UserId && !userIds.includes(hit._source.UserId)) {
         userIds.push(hit._source.UserId);
       }
     });
     answersComments.forEach((answerComments) => {
       answerComments.hits.hits.forEach((hit) => {
-        if (!userIds.includes(hit._source.UserId)) {
+        if (hit._source.UserId && !userIds.includes(hit._source.UserId)) {
           userIds.push(hit._source.UserId);
         }
       });
