@@ -88,6 +88,7 @@ exports.searchGet = async function (req, res, next) {
         totalHits: searchResults.hits.total,
         nextUrl,
         previousUrl,
+        query: req.query.search_term,
       });
     }
   } catch (err) {

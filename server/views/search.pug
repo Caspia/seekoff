@@ -6,7 +6,7 @@ block content
   form(method='GET' action='/search')
     .form-group
       label(for='search_term') Search:
-      input#search_term.form-control(type='text', name='search_term')
+      input#search_term.form-control(type='text', name='search_term', value=query || '')
     button.btn.btn-primary(type='submit') Search
   hr
   if errors
