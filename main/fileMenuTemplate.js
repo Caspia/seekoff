@@ -13,6 +13,8 @@ const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-
 const path = require('path');
 const fs = require('fs-extra');
 
+const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
+
 const fileMenuTemplate = {
   label: 'File',
   submenu: [
@@ -60,17 +62,16 @@ const fileMenuTemplate = {
 
         if (hasQuestions) {
           // Limit indexing using the questions file. sepost must be first.
-          // const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
-          const types = ['sepostlink'];
+          const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
           for (const type of types) {
             currentType = type;
             console.log('indexing ' + type);
-            await indexFromPostIds(questionsPath, client, type, INDEX_PREFIX, onProgress);
+            await indexFromPostIds(questionsPath, client, type, indexPrefix, onProgress);
           }
           await mainMsg.promiseRenderEvent('setbodytext', `Done indexing directory ${files[0]}`);
         } else {
           try {
-            await readFiles(files ? files[0] : null, client, INDEX_PREFIX);
+            await readFiles(files ? files[0] : null, client, indexPrefix);
           } catch (err) {
             console.log('Error indexing files: ' + prettyFormat(err));
           }
