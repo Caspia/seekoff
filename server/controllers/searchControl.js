@@ -16,7 +16,6 @@ const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
 
 exports.searchGet = async function (req, res, next) {
   try {
-    console.log('search term is ' + req.query.search_term);
     if (req.query.search_term) {
       const parms = req.query.from
         ? {from: parseInt(req.query.from, 10)}
@@ -61,6 +60,9 @@ exports.searchGet = async function (req, res, next) {
 
             // Get a link to the results
             renderResult.questionId = hitResult._source.ParentId || hitResult._source.Id;
+
+            // Votes
+            renderResult.voteCount = hitResult._source.VoteCount;
           } else {
             renderResult.title = 'Unparsable result';
           }

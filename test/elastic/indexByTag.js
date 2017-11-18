@@ -3,11 +3,11 @@
  */
 
 const assert = require('chai').assert;
-const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
+const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const elasticClient = require('../../lib/elasticClient');
 
-const {getQuestionIdsByTags, indexFromQuestionIds, indexFromPostIds, getAllPostIds} = require('../../lib/elasticReader');
+const {getQuestionIdsByTags, indexFromPostIds, getAllPostIds} = require('../../lib/elasticReader');
 
 const postsPath = path.join(__dirname, '..', 'data', 'Posts.xml');
 const questionsPath = path.join(__dirname, '..', 'data', 'Questions.json');

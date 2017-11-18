@@ -9,15 +9,20 @@ block content
   hr
   .container
     .row
-      .col-md-12
-        h1= title
-        hr
-    .row
       .col-md-9
         h2.questiontitle= question.Title
         p
           em
-            strong Asked:&nbsp
+            if question.Tags && question.Tags.split(' ').length
+              strong Tags:&nbsp
+              for tag in question.Tags.split(' ')
+                span.questiontag= tag
+                span &nbsp&nbsp
+        p
+          em
+            strong Votes:&nbsp
+            != question.VoteCount
+            strong &nbsp Asked:&nbsp
             != question.CreatedFormatted 
             strong &nbsp by:&nbsp
             != question.DisplayName
@@ -28,7 +33,16 @@ block content
             p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted} by !{questionComment._source.DisplayName}</em>
         for answer in answers
           hr
-          p <em><strong>Answered:</strong> !{answer._source.CreatedFormatted} <strong>by</strong> !{answer._source.DisplayName}</em>
+          p
+            em
+              if (question.AcceptedAnswerId == answer._id)
+                span &#10004;&nbsp&nbsp
+              strong Votes:&nbsp
+              != answer._source.VoteCount
+              strong &nbsp Answered:&nbsp
+              != answer._source.CreatedFormatted
+              strong &nbsp by &nbsp
+              != answer._source.DisplayName
           .postbody.hsmaller !{answer._source.Body}
           .comment
             for answerComment in answer._source.Comments
@@ -43,13 +57,6 @@ block content
           em
             strong View Count:&nbsp
             != question.ViewCount || '0'
-        p
-          em
-            if question.Tags && question.Tags.split(' ').length
-              strong Tags:&nbsp
-              for tag in question.Tags.split(' ')
-                span.questiontag= tag
-                span &nbsp&nbsp
         if linkedPostsValues.length
           hr
           h3 Linked
