@@ -140,7 +140,9 @@ exports.questionGet = async function (req, res, next) {
     // Map user id to display name for lookup
     const nameMap = new Map();
     users.docs.forEach((user) => {
-      nameMap.set(user._source.Id, user._source.DisplayName);
+      if (user._source) {
+        nameMap.set(user._source.Id, user._source.DisplayName);
+      }
     });
 
     // Add DisplayName to questions, answers, and comments.
@@ -161,14 +163,14 @@ exports.questionGet = async function (req, res, next) {
     question.docs[0]._source.CreatedFormatted =
       moment(question.docs[0]._source.CreationDate).format('LL');
     answers.hits.hits.forEach((hit) => {
-      hit._source.CreatedFormatted = moment(hit._source.CreationDate).format('LL');    
+      hit._source.CreatedFormatted = moment(hit._source.CreationDate).format('LL');
     });
     questionComments.hits.hits.forEach((hit) => {
       hit._source.CreatedFormatted = moment(hit._source.CreationDate).format('LL');
     });
     answersComments.forEach((answerComments) => {
       answerComments.hits.hits.forEach((hit) => {
-        hit._source.CreatedFormatted = moment(hit._source.CreationDate).format('LL');     
+        hit._source.CreatedFormatted = moment(hit._source.CreationDate).format('LL');
       });
     });
 
@@ -176,7 +178,7 @@ exports.questionGet = async function (req, res, next) {
     answers.hits.hits.forEach((hit, index) => {
       hit._source.Comments = answersComments[index].hits.hits;
     });
-    
+
     // show the result
     res.render('question', {
       title: 'Stack Caspia question detail',
@@ -187,7 +189,7 @@ exports.questionGet = async function (req, res, next) {
       relatedPostsValues,
     });
   } catch (err) {
-    console.log('Error in searchControl get: ' + err);
+    console.log('Error in questionControl get: ' + err);
     res.render('question', {
       title: 'Stack Caspia question detail',
       errors: [err],

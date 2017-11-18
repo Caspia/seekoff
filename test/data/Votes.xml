@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<votes>
+  <row Id="1" PostId="1" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="2" PostId="1" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="3" PostId="2" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="4" PostId="6" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="5" PostId="1" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="6" PostId="8" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="7" PostId="9" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="8" PostId="10" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="9" PostId="6" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="10" PostId="8" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="11" PostId="5" VoteTypeId="6" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="12" PostId="7" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="13" PostId="6" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="14" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="15" PostId="5" VoteTypeId="6" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="16" PostId="10" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="18" PostId="13" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="19" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="20" PostId="13" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="21" PostId="10" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="22" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="23" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="24" PostId="10" VoteTypeId="3" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="25" PostId="4" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="26" PostId="6" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="27" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="28" PostId="7" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="29" PostId="8" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="31" PostId="5" VoteTypeId="6" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="32" PostId="7" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="33" PostId="3" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="34" PostId="1" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="35" PostId="12" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="36" PostId="7" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="37" PostId="11" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="38" PostId="13" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="39" PostId="14" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+  <row Id="40" PostId="13" VoteTypeId="2" CreationDate="2013-05-22T00:00:00.000" />
+</votes>

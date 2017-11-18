@@ -1,5 +1,5 @@
 /**
- * Tests the multiExists call in client
+ * Tests the multiNeeded call in client
  */
 const assert = require('chai').assert;
 const path = require('path');
@@ -26,6 +26,9 @@ describe('indexing of xml files into elastic search', function () {
       await elasticClient.createIndex(client, TEST_INDEX_PREFIX + type, type);
     }
     await readFiles(dataPath, client, TEST_INDEX_PREFIX);
+    for (const type in elasticClient.typeMappings) {
+      await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + type);
+    };
   });
 
   after(async function () {
@@ -34,13 +37,28 @@ describe('indexing of xml files into elastic search', function () {
     }
   });
 
-  it('correctly categorizes found and missing ids', async function () {
+  it('correctly finds needed and missing user ids', async function () {
+    // 21 is in both
+    const u21 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '21');
+    // 1 is in neither
+    const u1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '1');
+    // 85 is in comments
+    const u85 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '85');
+    // 10 is in posts
+    const u10 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '10');
+    await elasticClient.multiNeeded.flushRequests(client, TEST_INDEX_PREFIX, 'seuser');
+    assert(await u21, 'found user 21 in both');
+    assert(!(await u1), 'did not find user 1');
+    assert(await u85, 'found user 85 in comments');
+    assert(await u10, 'found user 10 in posts');
+  });
+
+  it('correctly categorizes found and missing post ids', async function () {
     const type = 'sepost';
-    const index = TEST_INDEX_PREFIX + type;
-    const p1 = elasticClient.multiExists.promiseExists(client, index, type, '1');
-    const p2 = elasticClient.multiExists.promiseExists(client, index, type, '2');
-    const p3 = elasticClient.multiExists.promiseExists(client, index, type, '123');
-    await elasticClient.multiExists.flushRequests(client, index, type);
+    const p1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '1');
+    const p2 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '2');
+    const p3 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '123');
+    await elasticClient.multiNeeded.flushRequests(client, TEST_INDEX_PREFIX, type);
     assert(await p1, 'Found id 1');
     assert(await p2, 'Found id 2');
     assert(!(await p3), 'Did not find id 123');
@@ -52,7 +70,7 @@ describe('indexing of xml files into elastic search', function () {
     const index = TEST_INDEX_PREFIX + type;
     const promises = [];
     for (let i = 0; i < BATCH_COUNT; i++) {
-      promises.push(elasticClient.multiExists.promiseExists(client, index, type, String(i)));
+      promises.push(elasticClient.multiNeeded.promiseNeeded(client, index, type, String(i)));
     }
     const results = await Promise.all(promises);
     assert.equal(results.length, BATCH_COUNT, 'We get expected number of Promise results');

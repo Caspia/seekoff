@@ -7,7 +7,7 @@ const {BrowserWindow, dialog} = require('electron');
 const {readFiles, indexFromPostIds} = require('../lib/elasticReader');
 const {INDEX_PREFIX} = require('../lib/constants');
 const {client} = require('../lib/elasticClient');
-const {getQuestionIdsByTags} = require('../lib/elasticReader');
+const {getQuestionIdsByTags, getAllPostIds} = require('../lib/elasticReader');
 const mainMsg = require('../main/mainMsg');
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const path = require('path');
@@ -56,17 +56,18 @@ const fileMenuTemplate = {
 
         // If the directory has a Questions.json file, we will use that
         // to limit indexed posts.
-        const questionsPath = path.join(files[0], 'Questions.json');
-        const hasQuestions = await fs.exists(questionsPath);
-        console.log('Found Questions? ' + hasQuestions);
+        const postIdsPath = path.join(files[0], 'PostIds.json');
+        const hasPostIds = await fs.exists(postIdsPath);
+        console.log('Found PostIds? ' + hasPostIds);
 
-        if (hasQuestions) {
+        if (hasPostIds) {
           // Limit indexing using the questions file. sepost must be first.
           const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
+          //const types = ['seuser'];
           for (const type of types) {
             currentType = type;
             console.log('indexing ' + type);
-            await indexFromPostIds(questionsPath, client, type, indexPrefix, onProgress);
+            await indexFromPostIds(postIdsPath, client, type, indexPrefix, onProgress);
           }
           await mainMsg.promiseRenderEvent('setbodytext', `Done indexing directory ${files[0]}`);
         } else {
@@ -114,6 +115,39 @@ const fileMenuTemplate = {
           }));
         } catch (err) {
           console.log('Error getting question ids by tag: ' + prettyFormat(err));
+        }
+      },
+    },
+    {
+      label: 'Get Post Ids from Questions',
+      click: async () => {
+        // Update rendered display with progress information
+        function onProgress(linesRead, totalHits, percentDone) {
+          console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
+          mainMsg.promiseRenderEvent('progress', {
+            description: '% Questions processed ',
+            valuenow: String(percentDone),
+            textresult: `Records Indexed: ${totalHits}, Records processed: ${linesRead}`,
+          });
+        }
+
+        // Ask the user for Questions.json file to read
+        const files = dialog.showOpenDialog({
+          title: 'Get Questions.json file to process',
+          properties: ['openFile']});
+        try {
+          const [postIds, documentCount] = await getAllPostIds(files ? files[0] : null, onProgress);
+          await mainMsg.promiseRenderEvent('setbodytext', `Added ${documentCount} matching posts`);
+
+          // Write the results to a file in the same directory
+          const fileDirectory = path.dirname(files[0]);
+          const postIdsArray = Array.from(postIds);
+          await fs.writeFile(
+            path.join(fileDirectory, 'PostIds.json'),
+            JSON.stringify(postIdsArray)
+          );
+        } catch (err) {
+          console.log('Error getting all post Ids: ' + err);
         }
       },
     },
