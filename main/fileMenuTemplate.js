@@ -81,7 +81,7 @@ const fileMenuTemplate = {
       },
     },
     {
-      label: 'Count tags in file',
+      label: 'Make Questions.json from tags',
       click: async () => {
         // Update rendered display with progress information
         function onProgress(linesRead, totalHits, percentDone) {
@@ -95,7 +95,7 @@ const fileMenuTemplate = {
 
         // Ask the user for Posts.xml file to read
         const files = dialog.showOpenDialog({
-          title: 'Get file to process',
+          title: 'Get Posts.xml file to process',
           properties: ['openFile']});
         try {
           // Ask user for tags.
@@ -119,7 +119,7 @@ const fileMenuTemplate = {
       },
     },
     {
-      label: 'Get Post Ids from Questions',
+      label: 'Make PostIds.json from Questions',
       click: async () => {
         // Update rendered display with progress information
         function onProgress(linesRead, totalHits, percentDone) {

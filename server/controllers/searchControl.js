@@ -39,13 +39,11 @@ exports.searchGet = async function (req, res, next) {
           if (hitResult._source) {
             // Get a title, using Body if Title missing
             if (hitResult._source.Title) {
-              renderResult.title = hitResult._source.Title;
+              renderResult.title = 'Q: ' + hitResult._source.Title;
             } else if (hitResult._source.Body) {
               const textBody = html2plaintext(hitResult._source.Body);
-              renderResult.title =
-                textBody.length > 60
-                  ? textBody.substr(0, 60) + '...'
-                  : textBody;
+              renderResult.title = 'A: ' +
+                (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody);
             }
 
             // Get highlight
