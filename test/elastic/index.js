@@ -19,51 +19,47 @@ const TEST_INDEX_PREFIX = 'testindex_';
 const TEST_RESPONSES = {
   sepost: [
     {
-      Id: '1',
+      Id: 1,
       Title: 'What questions should be definitely off-topic',
       Tags: ' discussion  scope  questions ',
     },
     {
-      Id: '4',
-      LastActivityDate: '2013-11-04T23:45:02.173',
+      Id: 4,
+      AcceptedAnswerId: 8,
     },
     {
-      Id: '10',
-      CommentCount: '5',
+      Id: 10,
+      ParentId: 7,
     },
   ],
   secomment: [
     {
-      Id: '1',
-      PostId: '2',
+      Id: 1,
+      PostId: 2,
     },
     {
-      Id: '5',
-      Score: '0',
+      Id: 5,
+      UserId: 6,
     },
     {
-      Id: '81',
+      Id: 81,
       Text: 'A searchable community driven database of ranked questions and answers.',
     },
   ],
   seuser: [
     {
-      Id: '6',
-      Reputation: '725',
+      Id: 6,
+      DisplayName: 'World Engineer',
     },
     {
-      Id: '12',
+      Id: 12,
       DisplayName: 'iKlsR',
-    },
-    {
-      Id: '599',
-      Location: 'Where the shadows lie',
     },
   ],
   sepostlink: [
     {
-      Id: '41',
-      RelatedPostId: '7',
+      Id: 41,
+      RelatedPostId: 7,
     },
   ],
 };
@@ -82,11 +78,11 @@ describe('indexing of xml files into elastic search', function () {
     }
   });
 
-  after(async function () {
-    for (const type in elasticClient.typeMappings) {
-      await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
-    }
-  });
+  //after(async function () {
+  //  for (const type in elasticClient.typeMappings) {
+  //    await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
+  //  }
+  //});
 
   it('Indexes a directory containing stack overflow files', async function () {
     this.timeout(5000);
@@ -97,7 +93,7 @@ describe('indexing of xml files into elastic search', function () {
     for (const type in TEST_RESPONSES) {
       const ids = TEST_RESPONSES[type].map(item => item.Id);
       const response = await elasticClient.getDocuments(client, TEST_INDEX_PREFIX + type, type, ids);
-      // console.log('Returned indices:\n' + prettyjson.render(response));
+      //console.log('Returned indices:\n' + prettyjson.render(response));
       TEST_RESPONSES[type].forEach((testResponse, i) => {
         for (const parm in testResponse) {
           // console.log('Checking type ' + type + ' value: ' + testResponse[parm]);

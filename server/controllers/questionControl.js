@@ -78,7 +78,7 @@ exports.questionGet = async function (req, res, next) {
     linkedPosts.forEach((post) => {
       if (post.docs[0]._source) {
         linkedPostsValues.push({
-          Id: post.docs[0]._id,
+          Id: Number(post.docs[0]._id),
           Title: post.docs[0]._source.Title,
         });
       }
@@ -102,7 +102,7 @@ exports.questionGet = async function (req, res, next) {
     relatedPosts.forEach((post) => {
       if (post.docs[0]._source) {
         relatedPostsValues.push({
-          Id: post.docs[0]._id,
+          Id: Number(post.docs[0]._id),
           Title: post.docs[0]._source.Title,
         });
       }

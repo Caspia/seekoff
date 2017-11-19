@@ -35,7 +35,7 @@ block content
           hr
           p
             em
-              if (question.AcceptedAnswerId == answer._id)
+              if (question.AcceptedAnswerId == Number(answer._id))
                 span &#10004;&nbsp&nbsp
               strong Votes:&nbsp
               != answer._source.VoteCount

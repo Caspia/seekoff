@@ -17,6 +17,20 @@ const TEST_INDEX_PREFIX = 'testindex_';
 
 describe('indexing of xml files works by tag', function () {
   this.timeout(10000);
+  const client = elasticClient.makeClient({host: TEST_HOST});
+  before(async function () {
+    for (const type in elasticClient.typeMappings) {
+      // Delete test index if it exists
+      try {
+        await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
+      } catch (err) { }
+    }
+  });
+
+  //after(async function () {
+  //  for (const type in elasticClient.typeMappings) {
+  //    await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
+  //  }
 
   it('accumulates postids using questions', async function () {
     const [postIds] = await getAllPostIds(questionsPath, null);
@@ -55,7 +69,6 @@ describe('indexing of xml files works by tag', function () {
   });
 
   it('indexes posts using PostIds.json', async function () {
-    const client = elasticClient.makeClient({host: TEST_HOST});
     for (const type in elasticClient.nameMappings) {
       await indexFromPostIds(postIdsPath, client, type, TEST_INDEX_PREFIX);
       //await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + type);
@@ -64,9 +77,9 @@ describe('indexing of xml files works by tag', function () {
     // check Posts.xml
     const posts = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepost');
     assert.equal(posts.hits.total, 9, 'Indexed correct number of posts');
-    const indexedPosts = posts.hits.hits.map(hit => hit._id);
-    const questionIds = ['1', '2', '4'];
-    const answerIds = ['6', '8'];
+    const indexedPosts = posts.hits.hits.map(hit => Number(hit._id));
+    const questionIds = [1, 2, 4];
+    const answerIds = [6, 8];
     // Check using exists
     for (const id of questionIds) {
       assert(await client.exists({
@@ -81,11 +94,11 @@ describe('indexing of xml files works by tag', function () {
     // check Comments.xml
     const comments = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'secomment');
     const commentIds = [
-      '1', '2', '3', '5', '27', '30', '32', '33', '34', '39', '40', '58', '60',
-      '61', '63', '66', '78'];
+      1, 2, 3, 5, 27, 30, 32, 33, 34, 39, 40, 58, 60,
+      61, 63, 66, 78];
     // has extra comments for linked posts
     //assert.equal(comments.hits.total, commentIds.length, 'Indexed correct number of comments');
-    const indexedComments = comments.hits.hits.map(hit => hit._id);
+    const indexedComments = comments.hits.hits.map(hit => Number(hit._id));
     assert(commentIds.every(id => indexedComments.includes(id)), 'Indexed all expected comments');
 
     // check users
@@ -94,8 +107,8 @@ describe('indexing of xml files works by tag', function () {
 
     // check postlinks
     const postlinks = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'sepostlink');
-    const postlinkIds = ['1', '41', '82', '110'];
-    const indexedPostlinks = postlinks.hits.hits.map(hit => hit._id);
+    const postlinkIds = [1, 41, 82, 110];
+    const indexedPostlinks = postlinks.hits.hits.map(hit => Number(hit._id));
     assert(postlinkIds.every(id => indexedPostlinks.includes(id)), 'Indexed all expected postlinks');
     // Has extras from postLinks
     //assert.equal(postlinkIds.length, postlinks.hits.total, 'Found correct number of postlinks');

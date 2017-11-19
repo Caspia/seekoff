@@ -39,13 +39,13 @@ describe('indexing of xml files into elastic search', function () {
 
   it('correctly finds needed and missing user ids', async function () {
     // 21 is in both
-    const u21 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '21');
+    const u21 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', 21);
     // 1 is in neither
-    const u1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '1');
+    const u1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', 1);
     // 85 is in comments
-    const u85 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '85');
+    const u85 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', 85);
     // 10 is in posts
-    const u10 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', '10');
+    const u10 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, 'seuser', 10);
     await elasticClient.multiNeeded.flushRequests(client, TEST_INDEX_PREFIX, 'seuser');
     assert(await u21, 'found user 21 in both');
     assert(!(await u1), 'did not find user 1');
@@ -55,9 +55,9 @@ describe('indexing of xml files into elastic search', function () {
 
   it('correctly categorizes found and missing post ids', async function () {
     const type = 'sepost';
-    const p1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '1');
-    const p2 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '2');
-    const p3 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, '123');
+    const p1 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, 1);
+    const p2 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, 2);
+    const p3 = elasticClient.multiNeeded.promiseNeeded(client, TEST_INDEX_PREFIX, type, 123);
     await elasticClient.multiNeeded.flushRequests(client, TEST_INDEX_PREFIX, type);
     assert(await p1, 'Found id 1');
     assert(await p2, 'Found id 2');
