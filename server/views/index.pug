@@ -3,11 +3,6 @@ extends layout
 block content
   h1= title
 
-  form(method='GET' action='/search')
-    .form-group
-      label(for='search_term') Search:
-      input#search_term.form-control(type='text', name='search_term')
-    button.btn.btn-primary(type='submit') Search
   if errors
     ul
       for error in errors

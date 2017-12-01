@@ -27,7 +27,7 @@ exports.searchGet = async function (req, res, next) {
         req.query.search_term,
         parms,
       );
-      console.log('search result: ' + prettyFormat(searchResults));
+      //console.log('search result: ' + prettyFormat(searchResults));
 
       let renderResults = [{title: 'No results'}]; // what we will pass to template
       // Get or fake titles
@@ -41,11 +41,15 @@ exports.searchGet = async function (req, res, next) {
             renderResult.score = hitResult._score;
             // Get a title, using Body if Title missing
             if (hitResult._source.Title) {
-              renderResult.title = 'Q: ' + hitResult._source.Title;
+              renderResult.title = 'Q: ' + hitResult._source.Title
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
             } else if (hitResult._source.Body) {
               const textBody = html2plaintext(hitResult._source.Body);
               renderResult.title = 'A: ' +
-                (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody);
+                (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody)
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;');
             }
 
             // Get highlight
@@ -60,6 +64,7 @@ exports.searchGet = async function (req, res, next) {
 
             // Get a link to the results
             renderResult.questionId = hitResult._source.ParentId || hitResult._source.Id;
+            renderResult.myId = hitResult._source.Id;
 
             // Votes
             renderResult.voteCount = hitResult._source.VoteCount;
@@ -76,13 +81,14 @@ exports.searchGet = async function (req, res, next) {
       const nextFrom = currentFrom + 10;
       const previousFrom = currentFrom - 10;
       // encode the search term with + for spaces
-      const urlPrefix = req.protocol + '://' + req.headers.host + req.path + '?'
-             + canParam({search_term: req.query.search_term}) + '&from=';
+      const urlPrefix = req.protocol + '://' + req.headers.host + req.path + '?' +
+        canParam({search_term: req.query.search_term}) + '&from=';
       const nextUrl = urlPrefix + nextFrom;
       const previousUrl = previousFrom >= 0
         ? urlPrefix + previousFrom
         : null;
 
+      //console.log('renderResults are\n', prettyFormat(renderResults));
       // Show the results
       res.render('search', {
         title: 'Stack Caspia offline search',
@@ -100,26 +106,34 @@ exports.searchGet = async function (req, res, next) {
 };
 
 exports.explainGet = async function (req, res, next) {
-  console.log('explainGet');
   try {
     if (req.query.search_term) {
       let explainResults = 'Not Found';
+      let explainDocument;
       try {
-        explainResults = await elasticClient.explain(
-          client,
-          indexPrefix + 'sepost',
-          req.query.search_term,
-          'sepost',
-          req.query.id,
-          {},
-        );
+        [explainResults, explainDocument] = await Promise.all([
+          elasticClient.explain(
+            client,
+            indexPrefix + 'sepost',
+            req.query.search_term,
+            'sepost',
+            req.query.id,
+            {}),
+          elasticClient.getDocuments(
+            client,
+            indexPrefix + 'sepost',
+            'sepost',
+            [req.query.id]),
+        ]);
       } catch (err) {
         if (err.message != 'Not Found') throw err;
       }
 
+      //console.log('Document\n', prettyFormat(explainDocument));
       res.render('explain', {
-        title: 'Stack Caspia offline search',
-        explainResults: prettyHtml(explainResults.explanation, 2, 'html'),
+        title: 'Stack Caspia search explanation',
+        explainResults: sanitizeHtml(prettyHtml(explainResults.explanation, 2, 'html')),
+        explainDocument: sanitizeHtml(prettyHtml(explainDocument.docs[0], 2, 'html')),
         query: req.query.search_term,
       });
     }

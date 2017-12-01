@@ -10,4 +10,10 @@ html
     script(src='/external/prettyhtml.js')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    form(method='GET' action='/search')
+      .form-group
+        label(for='search_term') Search:
+        input#search_term.form-control(type='text', name='search_term', value=query || '')
+      button.btn.btn-primary(type='submit') Search
+    hr
     block content
