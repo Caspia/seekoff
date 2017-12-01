@@ -21,6 +21,11 @@ let gApp;
  * @param {*} app
  */
 function initapp(app) {
+  process.on('SIGINT', () => {
+    console.log('\nGracefully exiting');
+    process.exit();
+  });
+
   gApp = app;
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');

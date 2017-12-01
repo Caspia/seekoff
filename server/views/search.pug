@@ -36,6 +36,9 @@ block content
           .col-md-11
             if result.title
               <a class='searchlink' href=!{'/question/' + result.questionId}><h3>!{result.title}</h3></a>
+              p
+                strong
+                  <a href=!{'explain?search_term=' + encodeURIComponent(query) + '&id=' + result.questionId}>Score:!{result.score.toFixed(2)}</a>
               .highlight
                 p !{result.highlight}
             else

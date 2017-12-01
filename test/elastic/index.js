@@ -117,6 +117,19 @@ describe('indexing of xml files into elastic search', function () {
     assert(res.hits.hits.some(result => result._id == '9'), 'proper id of an answer found');
   });
 
+  it('returns results for explain', async function () {
+    const res = await elasticClient.explain(
+      client,
+      TEST_INDEX_PREFIX + 'sepost',
+      'better',
+      'sepost',
+      1,
+      {});
+    assert(res.matched, 'Found search result in explain');
+    assert(res.explanation.value < 1.0 && res.explanation.value > 0, 'explain value in range');
+    //console.log('explain result is ' + prettyjson.render(res));
+  });
+
   it('returns comments for a post', async function () {
     const res = await elasticClient.comments(client, TEST_INDEX_PREFIX + 'secomment', '6', {});
     // console.log(prettyjson.render(res));
