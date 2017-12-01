@@ -42,10 +42,15 @@ a {
   margin: 0;
   padding: 0;
 }
+.parenttitle {
+  font-size: smaller;
+  margin: 0;
+  padding: 0;
+}
 .comment hr {
   margin-top: 5pt;
   margin-bottom: 5pt;
 }
 .questiontag {
-  background-color: #e0e0d0;
+  background-color: #f0f0f0;
 }

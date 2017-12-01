@@ -34,11 +34,36 @@ exports.searchGet = async function (req, res, next) {
       let hitResults;
       try { hitResults = searchResults.hits.hits; } catch (err) {}
       if (hitResults && hitResults.length) {
+        // For answers, query to get the questions
+        /*
+        const questionIds = [];
+        hitResults.forEach(hitResult => {
+          if (hitResult._source.ParentId) {
+            questionIds.push(hitResult._source.ParentId);
+          }
+        });
+        if (questionIds.length) {
+          const questions = await elasticClient.getDocuments(
+            client,
+            indexPrefix + 'sepost',
+            'sepost',
+            questionIds);
+          questions.docs.forEach(question => {
+            const id = question._source.Id;
+            hitResults.forEach(hitResult => {
+              if (hitResult._source.ParentId == id) {
+                hitResult._source.Tags = question._source.Tags;
+              }
+            });
+          });
+        }
+        */
         renderResults = hitResults.map((hitResult) => {
           const renderResult = {};
           //console.log('hitResult: ' + prettyFormat(hitResult));
           if (hitResult._source) {
             renderResult.score = hitResult._score;
+            renderResult.Tags = hitResult._source.Tags;
             // Get a title, using Body if Title missing
             if (hitResult._source.Title) {
               renderResult.title = 'Q: ' + hitResult._source.Title
@@ -50,6 +75,7 @@ exports.searchGet = async function (req, res, next) {
                 (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody)
                   .replace(/</g, '&lt;')
                   .replace(/>/g, '&gt;');
+              renderResult.questionTitle = hitResult._source.QuestionTitle;
             }
 
             // Get highlight
