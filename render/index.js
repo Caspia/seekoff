@@ -44,55 +44,36 @@ window.onload = () => {
       });
   });
 
-  handleEvent('getTags', async () => {
-    // render the tags form
-    const DOMMutation = promiseDOMMutation();
-    thebody.innerHTML = pug.renderFile('views/prompt.pug', {label: 'Enter space separated list of tags'});
-    await DOMMutation;
-    const buttonElement = document.getElementById('promptbutton');
-
-    // wait for form result, returning array of tags
-    return new Promise((resolve, reject) => {
-      function onClick(event) {
-        event.preventDefault();
-        const inputElement = document.getElementById('name');
-        buttonElement.removeEventListener('click', onClick);
-        resolve(inputElement.value.split(' '));
-      }
-      buttonElement.addEventListener('click', onClick);
-    });
-  });
-
   handleEvent('setbodytext', async function (text) {
     thebody.innerHTML = text;
   });
 
-  handleEvent('setpreferences', async function (preferences) {
+  handleEvent('setparameters', async function (parameters) {
     const DOMMutation = promiseDOMMutation();
-    thebody.innerHTML = pug.renderFile('views/preferences.pug', {preferences});
+    thebody.innerHTML = pug.renderFile('views/parameters.pug', {parameters});
     await DOMMutation;
 
     const submitElement = document.getElementById('promptbutton');
     const cancelElement = document.getElementById('cancelbutton');
 
-    // wait for form result, returning preferences
+    // wait for form result, returning parameters
     return new Promise((resolve, reject) => {
       function onClick(event) {
         event.preventDefault();
         submitElement.removeEventListener('click', onClick);
         cancelElement.removeEventListener('click', onCancel);
-        for (const key in preferences) {
-          preferences[key] = document.getElementById(key).value;
+        for (const key in parameters) {
+          parameters[key] = document.getElementById(key).value;
         }
-        thebody.innerHTML = 'Preferences saved';
-        resolve(preferences);
+        thebody.innerHTML = 'Parameters saved';
+        resolve(parameters);
       }
       function onCancel(event) {
         event.preventDefault();
         submitElement.removeEventListener('click', onClick);
         cancelElement.removeEventListener('click', onCancel);
-        thebody.innerHTML = 'Preferences not saved';
-        resolve(preferences);
+        thebody.innerHTML = 'Parameters not saved';
+        resolve(parameters);
       }
       submitElement.addEventListener('click', onClick);
       cancelElement.addEventListener('click', onCancel);

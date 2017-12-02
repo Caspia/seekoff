@@ -9,18 +9,14 @@ const {doPing, getIndices} = require('./elasticRequest');
 const mainMsg = require('../main/mainMsg');
 const pug = require('pug');
 
-function logReady() {
-  console.log("DOM ready");
-}
-
 const elasticMenuTemplate = {
   label: 'Elastic',
   submenu: [
     { label: 'Test',
-      click: () => mainMsg.fireMenuSelection('elastic-test')
+      click: () => mainMsg.fireMenuSelection('elastic-test'),
     },
     { label: 'Ping',
-      click: () => doPing()
+      click: () => doPing(),
     },
     { label: 'Get Indices',
       click: function () {
@@ -41,7 +37,7 @@ const elasticMenuTemplate = {
             console.log('Error: ' + err);
           });
         /* */
-      }
+      },
     },
     {
       label: 'Create Index',
@@ -55,7 +51,7 @@ const elasticMenuTemplate = {
             console.log('Error creating index: ' + err);
             mainMsg.sendStatus(err.message || err);
           });
-      }
+      },
     },
     {
       label: 'Delete index ...',
@@ -67,9 +63,9 @@ const elasticMenuTemplate = {
           .catch((err) => {
             mainMsg.sendStatus(err.message || err);
           });
-      }
-    }
-  ]
+      },
+    },
+  ],
 };
 
 module.exports = elasticMenuTemplate;

@@ -4,23 +4,14 @@
  */
 
 const {BrowserWindow, dialog, app} = require('electron');
-const {readFiles, indexFromPostIds} = require('../lib/elasticReader');
-const {INDEX_PREFIX} = require('../lib/constants');
+const {readFiles, indexFromPostIds, extendAnswersFromQuestions} = require('../lib/elasticReader');
+const parameters = require('../lib/parameters');
 const {client} = require('../lib/elasticClient');
 const {getQuestionIdsByTags, getAllPostIds} = require('../lib/elasticReader');
 const mainMsg = require('../main/mainMsg');
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const fs = require('fs-extra');
-
-const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
-
-const preferenceDefaults = {
-  host: 'localhost:9200',
-  indexPrefix: 'javascript_',
-  tagsToIndex: 'javascript node.js express passport mongoose html bootstrap mocha electron pug jade',
-  tagsToExclude: 'exploit sql-injection penetration-testing xss sniffing',
-};
 
 const fileMenuTemplate = {
   label: 'File',
@@ -74,12 +65,12 @@ const fileMenuTemplate = {
           for (const type of types) {
             currentType = type;
             console.log('indexing ' + type);
-            await indexFromPostIds(postIdsPath, client, type, indexPrefix, onProgress);
+            await indexFromPostIds(postIdsPath, client, type, parameters.indexPrefix, onProgress);
           }
           await mainMsg.promiseRenderEvent('setbodytext', `Done indexing directory ${files[0]}`);
         } else {
           try {
-            await readFiles(files ? files[0] : null, client, indexPrefix);
+            await readFiles(files ? files[0] : null, client, parameters.indexPrefix);
           } catch (err) {
             console.log('Error indexing files: ' + prettyFormat(err));
           }
@@ -105,8 +96,7 @@ const fileMenuTemplate = {
           title: 'Get Posts.xml file to process',
           properties: ['openFile']});
         try {
-          // Ask user for tags.
-          const tags = await mainMsg.promiseRenderEvent('getTags', null);
+          const tags = parameters.tagsToIndex.split(' ');
 
           // Search for question ids matching the tags.
           await mainMsg.promiseRenderEvent('setbodytext', 'Searching ...');
@@ -143,7 +133,7 @@ const fileMenuTemplate = {
           title: 'Get Questions.json file to process',
           properties: ['openFile']});
         try {
-          const [postIds, documentCount, questionSummaries] = await getAllPostIds(files ? files[0] : null, onProgress);
+          const [postIds, documentCount, questionIds] = await getAllPostIds(files ? files[0] : null, onProgress);
           await mainMsg.promiseRenderEvent('setbodytext', `Added ${documentCount} matching posts`);
 
           // Write the results to a file in the same directory
@@ -153,9 +143,10 @@ const fileMenuTemplate = {
             path.join(fileDirectory, 'PostIds.json'),
             JSON.stringify(postIdsArray)
           );
+          const extendedQuestionIdsArray = Array.from(questionIds);
           await fs.writeFile(
-            path.join(fileDirectory, 'QuestionSummaries.json'),
-            JSON.stringify(questionSummaries)
+            path.join(fileDirectory, 'ExtendedQuestionIds.json'),
+            JSON.stringify(extendedQuestionIdsArray)
           );
         } catch (err) {
           console.log('Error getting all post Ids: ' + err);
@@ -163,20 +154,36 @@ const fileMenuTemplate = {
       },
     },
     {
+      label: 'Extends answers from ExtendedQuestionIds.json',
+      click: async () => {
+        // Update rendered display with progress information
+        function onProgress(linesRead, totalHits, percentDone, progressDescription) {
+          console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
+          mainMsg.promiseRenderEvent('progress', {
+            description: progressDescription || '% Questions processed ',
+            valuenow: String(percentDone),
+            textresult: `Answers extended: ${totalHits}, Questions processed: ${linesRead}`,
+          });
+        }
+
+        // Ask the user for ExtendedQuestionIds.json file to read
+        const files = dialog.showOpenDialog({
+          title: 'Get ExtendedQuestionIds.json file to process',
+          properties: ['openFile']});
+
+        await extendAnswersFromQuestions(files[0], client, parameters.indexPrefix, onProgress);
+        await mainMsg.promiseRenderEvent('setbodytext', 'Done extending answers from questions');
+      },
+    },
+    {
       label: 'Set index parameters',
       click: async () => {
         // read in the configuration file
         const prefsPath = path.join(app.getPath('userData'), 'prefs.json');
-        let preferencesOld = {};
-        try {
-          preferencesOld = JSON.parse(await fs.readFile(prefsPath));
-        } catch (err) {} // Just use defaults on error
-        // Assign over defaults so that new defaults are picked up
-        let preferences = Object.assign(preferenceDefaults, preferencesOld);
 
-        const newPreferences = await mainMsg.promiseRenderEvent('setpreferences', preferences);
-        console.log('preferences is\n' + prettyFormat(newPreferences));
-        await fs.writeFile(prefsPath, JSON.stringify(newPreferences));
+        const newParameters = await mainMsg.promiseRenderEvent('setparameters', parameters);
+        for (const key in newParameters) parameters[key] = newParameters[key];
+        await fs.writeFile(prefsPath, JSON.stringify(parameters));
       },
     },
     { role: 'quit' },

@@ -103,6 +103,15 @@ describe('indexing of xml files into elastic search', function () {
     }
   });
 
+  it('returns correct document from index using getDocument', async function () {
+    for (const type in TEST_RESPONSES) {
+      const ids = TEST_RESPONSES[type].map(item => item.Id);
+      const response = await elasticClient.getDocument(client, TEST_INDEX_PREFIX + type, type, ids[0]);
+      //console.log('Returned document:\n' + prettyjson.render(response));
+      assert(response.found, 'Found the document using getDocument');
+    }
+  });
+
   it('returns documents from search', async function () {
     const res = await elasticClient.search(client, TEST_INDEX_PREFIX + 'sepost', 'questions', {});
     //console.log(prettyjson.render(res));

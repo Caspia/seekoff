@@ -7,7 +7,11 @@ const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-
 const path = require('path');
 const elasticClient = require('../../lib/elasticClient');
 
-const {getQuestionIdsByTags, indexFromPostIds, getAllPostIds} = require('../../lib/elasticReader');
+const {
+  getQuestionIdsByTags,
+  indexFromPostIds,
+  getAllPostIds,
+  extendAnswersFromQuestions} = require('../../lib/elasticReader');
 
 const postsPath = path.join(__dirname, '..', 'data', 'Posts.xml');
 const questionsPath = path.join(__dirname, '..', 'data', 'Questions.json');
@@ -71,7 +75,7 @@ describe('indexing of xml files works by tag', function () {
   it('indexes posts using PostIds.json', async function () {
     for (const type in elasticClient.nameMappings) {
       await indexFromPostIds(postIdsPath, client, type, TEST_INDEX_PREFIX);
-      //await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + type);
+      await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + type);
     }
 
     // check Posts.xml
@@ -103,6 +107,7 @@ describe('indexing of xml files works by tag', function () {
 
     // check users
     const users = await elasticClient.getAllDocuments(client, TEST_INDEX_PREFIX + 'seuser');
+    //console.log('Found ' + users.hits.total + ' users');
     assert.equal(5, users.hits.total, 'Found correct number of users');
 
     // check postlinks
@@ -112,5 +117,20 @@ describe('indexing of xml files works by tag', function () {
     assert(postlinkIds.every(id => indexedPostlinks.includes(id)), 'Indexed all expected postlinks');
     // Has extras from postLinks
     //assert.equal(postlinkIds.length, postlinks.hits.total, 'Found correct number of postlinks');
+  });
+
+  it('Extends answers from questions', async function () {
+    await extendAnswersFromQuestions(postIdsPath, client, TEST_INDEX_PREFIX);
+    await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + 'sepost');
+
+    // check that answer was extended from the question.
+    const answer = await elasticClient.getDocument(client, TEST_INDEX_PREFIX + 'sepost', 'sepost', 6);
+    assert(answer.found, 'Got the answer');
+    assert.equal(answer._source.Tags, ' discussion  scope  questions ', 'Tags are extended');
+    assert.equal(answer._source.ViewCount, 1791, 'ViewCount extended');
+    assert.equal(
+      answer._source.QuestionTitle,
+      'What questions should be definitely off-topic',
+      'QuestionTitle extended');
   });
 });
