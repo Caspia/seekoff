@@ -67,6 +67,38 @@ window.onload = () => {
     thebody.innerHTML = text;
   });
 
+  handleEvent('setpreferences', async function (preferences) {
+    const DOMMutation = promiseDOMMutation();
+    thebody.innerHTML = pug.renderFile('views/preferences.pug', {preferences});
+    await DOMMutation;
+
+    const submitElement = document.getElementById('promptbutton');
+    const cancelElement = document.getElementById('cancelbutton');
+
+    // wait for form result, returning preferences
+    return new Promise((resolve, reject) => {
+      function onClick(event) {
+        event.preventDefault();
+        submitElement.removeEventListener('click', onClick);
+        cancelElement.removeEventListener('click', onCancel);
+        for (const key in preferences) {
+          preferences[key] = document.getElementById(key).value;
+        }
+        thebody.innerHTML = 'Preferences saved';
+        resolve(preferences);
+      }
+      function onCancel(event) {
+        event.preventDefault();
+        submitElement.removeEventListener('click', onClick);
+        cancelElement.removeEventListener('click', onCancel);
+        thebody.innerHTML = 'Preferences not saved';
+        resolve(preferences);
+      }
+      submitElement.addEventListener('click', onClick);
+      cancelElement.addEventListener('click', onCancel);
+    });
+  });
+
   ipcRenderer.on('status', (event, msg) => {
     document.getElementById('statusfooter').innerText = msg;
   });

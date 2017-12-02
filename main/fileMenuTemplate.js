@@ -3,7 +3,7 @@
  * @file
  */
 
-const {BrowserWindow, dialog} = require('electron');
+const {BrowserWindow, dialog, app} = require('electron');
 const {readFiles, indexFromPostIds} = require('../lib/elasticReader');
 const {INDEX_PREFIX} = require('../lib/constants');
 const {client} = require('../lib/elasticClient');
@@ -14,6 +14,13 @@ const path = require('path');
 const fs = require('fs-extra');
 
 const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
+
+const preferenceDefaults = {
+  host: 'localhost:9200',
+  indexPrefix: 'javascript_',
+  tagsToIndex: 'javascript node.js express passport mongoose html bootstrap mocha electron pug jade',
+  tagsToExclude: 'exploit sql-injection penetration-testing xss sniffing',
+};
 
 const fileMenuTemplate = {
   label: 'File',
@@ -122,10 +129,10 @@ const fileMenuTemplate = {
       label: 'Make PostIds.json from Questions',
       click: async () => {
         // Update rendered display with progress information
-        function onProgress(linesRead, totalHits, percentDone) {
+        function onProgress(linesRead, totalHits, percentDone, progressDescription) {
           console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
           mainMsg.promiseRenderEvent('progress', {
-            description: '% Questions processed ',
+            description: progressDescription || '% Questions processed ',
             valuenow: String(percentDone),
             textresult: `Records Indexed: ${totalHits}, Records processed: ${linesRead}`,
           });
@@ -153,6 +160,23 @@ const fileMenuTemplate = {
         } catch (err) {
           console.log('Error getting all post Ids: ' + err);
         }
+      },
+    },
+    {
+      label: 'Set index parameters',
+      click: async () => {
+        // read in the configuration file
+        const prefsPath = path.join(app.getPath('userData'), 'prefs.json');
+        let preferencesOld = {};
+        try {
+          preferencesOld = JSON.parse(await fs.readFile(prefsPath));
+        } catch (err) {} // Just use defaults on error
+        // Assign over defaults so that new defaults are picked up
+        let preferences = Object.assign(preferenceDefaults, preferencesOld);
+
+        const newPreferences = await mainMsg.promiseRenderEvent('setpreferences', preferences);
+        console.log('preferences is\n' + prettyFormat(newPreferences));
+        await fs.writeFile(prefsPath, JSON.stringify(newPreferences));
       },
     },
     { role: 'quit' },

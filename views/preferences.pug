@@ -1,0 +1,14 @@
+form(method='POST' action='#')
+  table.table.table-bordered
+    thead
+      tr
+        th Name
+        th Value
+    tbody
+    each value, key in preferences
+      tr
+        td=key
+        td
+          input.form-control(type='text', name=key, value=value, id=key)
+  button#promptbutton.btn.btn-primary(type='submit') Submit
+  button#cancelbutton.btn.btn-warning(type='submit') Cancel
