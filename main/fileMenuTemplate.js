@@ -5,7 +5,7 @@
 
 const {BrowserWindow, dialog, app} = require('electron');
 const {readFiles, indexFromPostIds, extendAnswersFromQuestions} = require('../lib/elasticReader');
-const parameters = require('../lib/parameters');
+const {parameters, preferenceDefaults} = require('../lib/parameters');
 const {client} = require('../lib/elasticClient');
 const {getQuestionIdsByTags, getAllPostIds} = require('../lib/elasticReader');
 const mainMsg = require('../main/mainMsg');
@@ -181,12 +181,18 @@ const fileMenuTemplate = {
         const appPath = path.join(require('os').homedir(), '.stackoff');
         const prefsPath = path.join(appPath, 'prefs.json');
 
-        const newParameters = await mainMsg.promiseRenderEvent('setparameters', parameters);
-        for (const key in newParameters) parameters[key] = newParameters[key];
-        if (!(await fs.exists(appPath))) {
-          await fs.mkdir(appPath);
+        const results = await mainMsg.promiseRenderEvent('setparameters', parameters);
+        if (results.button == 'defaults') {
+          results.parameters = JSON.parse(JSON.stringify(preferenceDefaults));
+          console.log('parameters\n' + prettyFormat(preferenceDefaults));
         }
-        await fs.writeFile(prefsPath, JSON.stringify(parameters));
+        if (results.button != 'cancel') {
+          for (const key in results.parameters) parameters[key] = results.parameters[key];
+          if (!(await fs.exists(appPath))) {
+            await fs.mkdir(appPath);
+          }
+          await fs.writeFile(prefsPath, JSON.stringify(parameters));
+        }
       },
     },
     { role: 'quit' },

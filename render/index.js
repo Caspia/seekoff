@@ -55,28 +55,40 @@ window.onload = () => {
 
     const submitElement = document.getElementById('promptbutton');
     const cancelElement = document.getElementById('cancelbutton');
+    const defaultsElement = document.getElementById('defaultsbutton');
 
     // wait for form result, returning parameters
     return new Promise((resolve, reject) => {
-      function onClick(event) {
-        event.preventDefault();
+      function removeListeners() {
         submitElement.removeEventListener('click', onClick);
         cancelElement.removeEventListener('click', onCancel);
+        defaultsElement.removeEventListener('click', onDefaults);
+      }
+      function onClick(event) {
+        event.preventDefault();
+        removeListeners();
         for (const key in parameters) {
           parameters[key] = document.getElementById(key).value;
         }
         thebody.innerHTML = 'Parameters saved';
-        resolve(parameters);
+        resolve({parameters, button: 'submit'});
       }
       function onCancel(event) {
         event.preventDefault();
-        submitElement.removeEventListener('click', onClick);
-        cancelElement.removeEventListener('click', onCancel);
+        removeListeners();
         thebody.innerHTML = 'Parameters not saved';
-        resolve(parameters);
+        resolve({parameters, button: 'cancel'});
+      }
+      function onDefaults(event) {
+        event.preventDefault();
+        removeListeners();
+        thebody.innerHTML = 'Default parameters restored';
+        resolve({parameters, button: 'defaults'});
+
       }
       submitElement.addEventListener('click', onClick);
       cancelElement.addEventListener('click', onCancel);
+      defaultsElement.addEventListener('click', onDefaults);
     });
   });
 

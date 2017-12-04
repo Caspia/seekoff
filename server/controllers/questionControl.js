@@ -7,7 +7,7 @@ const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const moment = require('moment');
-const parameters = require(path.join(libPath, 'parameters'));
+const {parameters} = require(path.join(libPath, 'parameters'));
 
 const client = elasticClient.client;
 const indexPrefix = parameters.indexPrefix;

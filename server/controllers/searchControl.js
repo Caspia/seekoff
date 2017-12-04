@@ -10,7 +10,7 @@ const canParam = require('can-param');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const prettyHtml = require('js-object-pretty-print').pretty;
-const parameters = require(path.join(libPath, 'parameters'));
+const {parameters} = require(path.join(libPath, 'parameters'));
 
 const client = elasticClient.client;
 const indexPrefix = parameters.indexPrefix;
