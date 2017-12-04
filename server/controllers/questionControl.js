@@ -109,7 +109,9 @@ exports.questionGet = async function (req, res, next) {
 
     // Get user display names for question, answers, and comments
     const userIds = [];
-    userIds.push(question.docs[0]._source.OwnerUserId);
+    if (question.docs[0]._source.OwnerUserId) {
+      userIds.push(question.docs[0]._source.OwnerUserId);
+    }
     answers.hits.hits.forEach((hit) => {
       if (hit._source.OwnerUserId && !userIds.includes(hit._source.OwnerUserId)) {
         userIds.push(hit._source.OwnerUserId);

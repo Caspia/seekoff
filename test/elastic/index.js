@@ -8,9 +8,10 @@ const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
 
 const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
-const { readFiles } = require(path.join(libPath, 'elasticReader'));
+const { readFiles, extendAnswersFromQuestions } = require(path.join(libPath, 'elasticReader'));
 
 const dataPath = path.join(__dirname, '..', 'data');
+const postIdsPath = path.join(dataPath, 'ExtendedQuestionIds.json');
 
 const TEST_HOST = 'localhost:9200';
 const TEST_INDEX_PREFIX = 'testindex_';
@@ -75,6 +76,7 @@ describe('indexing of xml files into elastic search', function () {
         await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
       } catch (err) { }
       await elasticClient.createIndex(client, TEST_INDEX_PREFIX + type, type);
+      await extendAnswersFromQuestions(postIdsPath, client, TEST_INDEX_PREFIX);
     }
   });
 
@@ -115,7 +117,7 @@ describe('indexing of xml files into elastic search', function () {
   it('returns documents from search', async function () {
     const res = await elasticClient.search(client, TEST_INDEX_PREFIX + 'sepost', 'questions', {});
     //console.log(prettyjson.render(res));
-    assert.equal(res.hits.total, 5, 'Query returns proper number of hits');
+    assert.equal(res.hits.total, 6, 'Query returns proper number of hits');
     assert.equal(res.hits.hits[0]._source.Title, 'What questions should be definitely off-topic', 'Expected post found');
   });
 
@@ -135,6 +137,7 @@ describe('indexing of xml files into elastic search', function () {
       1,
       {});
     assert(res.matched, 'Found search result in explain');
+    console.log('res.explanation:\n' + prettyjson.render(res.explanation));
     assert(res.explanation.value < 1.0 && res.explanation.value > 0, 'explain value in range');
     //console.log('explain result is ' + prettyjson.render(res));
   });

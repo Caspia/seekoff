@@ -178,11 +178,14 @@ const fileMenuTemplate = {
     {
       label: 'Set index parameters',
       click: async () => {
-        // read in the configuration file
-        const prefsPath = path.join(app.getPath('userData'), 'prefs.json');
+        const appPath = path.join(require('os').homedir(), '.stackoff');
+        const prefsPath = path.join(appPath, 'prefs.json');
 
         const newParameters = await mainMsg.promiseRenderEvent('setparameters', parameters);
         for (const key in newParameters) parameters[key] = newParameters[key];
+        if (!(await fs.exists(appPath))) {
+          await fs.mkdir(appPath);
+        }
         await fs.writeFile(prefsPath, JSON.stringify(parameters));
       },
     },
