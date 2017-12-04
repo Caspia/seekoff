@@ -7,11 +7,10 @@ const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const moment = require('moment');
-const {INDEX_PREFIX} = require(path.join(libPath, 'constants'));
+const parameters = require(path.join(libPath, 'parameters'));
 
 const client = elasticClient.client;
-const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
-
+const indexPrefix = parameters.indexPrefix;
 // Get database results that only depend on question id
 exports.questionGet = async function (req, res, next) {
   try {

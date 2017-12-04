@@ -33,8 +33,9 @@ block content
               if (result.questionTitle)
                 p="(Q: " + result.questionTitle + " )"
               p
-                strong
-                  <a href=!{'explain?search_term=' + encodeURIComponent(query) + '&id=' + result.myId}>Score:!{result.score.toFixed(2)}</a>
+                if (result.score)
+                  strong
+                    <a href=!{'explain?search_term=' + encodeURIComponent(query) + '&id=' + result.myId}>Score:!{(result.score).toFixed(2)}</a>
                 if result.Tags && result.Tags.split(' ').length
                   strong &nbsp&nbspTags:&nbsp
                   for tag in result.Tags.split(' ')

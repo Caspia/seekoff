@@ -9,11 +9,11 @@ const sanitizeHtml = require('sanitize-html');
 const canParam = require('can-param');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
-const {INDEX_PREFIX} = require(path.join(libPath, 'constants'));
 const prettyHtml = require('js-object-pretty-print').pretty;
+const parameters = require(path.join(libPath, 'parameters'));
 
 const client = elasticClient.client;
-const indexPrefix = process.env.ELASTIC_INDEX_PREFIX || INDEX_PREFIX;
+const indexPrefix = parameters.indexPrefix;
 
 exports.searchGet = async function (req, res, next) {
   try {
@@ -164,7 +164,7 @@ exports.explainGet = async function (req, res, next) {
       });
     }
   } catch (err) {
-    console.log('Error in searchControl get: ' + err);
+    console.error('Error in searchControl get: ' + err);
     res.render('explain', {errors: [err]});
   }
 };
