@@ -38,10 +38,10 @@ const fileMenuTemplate = {
         let currentType;
 
         // Update rendered display with progress information
-        function onProgress(linesRead, totalHits, percentDone) {
+        function onProgress(linesRead, totalHits, percentDone, progressDescription) {
           console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
           mainMsg.promiseRenderEvent('progress', {
-            description: '% Completion indexing ' + currentType,
+            description: progressDescription || ('% Completion indexing ' + currentType),
             valuenow: String(percentDone),
             textresult: `Records Indexed: ${totalHits}, Records processed: ${linesRead}`,
           });
@@ -82,10 +82,10 @@ const fileMenuTemplate = {
       label: 'Make Questions.json from tags',
       click: async () => {
         // Update rendered display with progress information
-        function onProgress(linesRead, totalHits, percentDone) {
+        function onProgress(linesRead, totalHits, percentDone, progressDescription) {
           console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
           mainMsg.promiseRenderEvent('progress', {
-            description: '% Completion getting post ids by tag',
+            description: progressDescription || '% Completion getting post ids by tag',
             valuenow: String(percentDone),
             textresult: `Total hits: ${totalHits}, Records processed: ${linesRead}`,
           });
