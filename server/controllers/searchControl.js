@@ -15,6 +15,10 @@ const {parameters} = require(path.join(libPath, 'parameters'));
 const client = elasticClient.client;
 const indexPrefix = parameters.indexPrefix;
 
+function escapeHTML(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 exports.searchGet = async function (req, res, next) {
   try {
     if (req.query.search_term) {
@@ -66,16 +70,12 @@ exports.searchGet = async function (req, res, next) {
             renderResult.Tags = hitResult._source.Tags;
             // Get a title, using Body if Title missing
             if (hitResult._source.Title) {
-              renderResult.title = 'Q: ' + hitResult._source.Title
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+              renderResult.title = escapeHTML('Q: ' + hitResult._source.Title);
             } else if (hitResult._source.Body) {
               const textBody = html2plaintext(hitResult._source.Body);
-              renderResult.title = 'A: ' +
-                (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody)
-                  .replace(/</g, '&lt;')
-                  .replace(/>/g, '&gt;');
-              renderResult.questionTitle = hitResult._source.QuestionTitle;
+              renderResult.title =
+                escapeHTML('A: ' + (textBody.length > 60 ? textBody.substr(0, 60) + '...' : textBody));
+              renderResult.questionTitle = escapeHTML(hitResult._source.QuestionTitle);
             }
 
             // Get highlight

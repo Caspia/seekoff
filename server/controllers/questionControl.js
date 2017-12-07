@@ -48,6 +48,16 @@ exports.questionGet = async function (req, res, next) {
     ]);
     const [question, answers, questionComments, linked, related] = questionResults;
 
+    // If we cannot find the question, punt with an error.
+    let haveQuestion = false;
+    try {
+      haveQuestion = !!question.docs[0]._source;
+    } catch (err) {}
+    if (!haveQuestion) {
+      res.render('error', {message: 'Error: Question not found'});
+      return;
+    }
+
     // Get comments on answers
     const answersComments = await Promise.all(
       answers.hits.hits.map((hit) => {
@@ -109,7 +119,7 @@ exports.questionGet = async function (req, res, next) {
 
     // Get user display names for question, answers, and comments
     const userIds = [];
-    if (question.docs[0]._source.OwnerUserId) {
+    if (question.docs[0]._source && question.docs[0]._source.OwnerUserId) {
       userIds.push(question.docs[0]._source.OwnerUserId);
     }
     answers.hits.hits.forEach((hit) => {
@@ -147,7 +157,9 @@ exports.questionGet = async function (req, res, next) {
     });
 
     // Add DisplayName to questions, answers, and comments.
-    question.docs[0]._source.DisplayName = nameMap.get(question.docs[0]._source.OwnerUserId);
+    if (question.docs[0]._source) {
+      question.docs[0]._source.DisplayName = nameMap.get(question.docs[0]._source.OwnerUserId);
+    }
     answers.hits.hits.forEach((hit) => {
       hit._source.DisplayName = nameMap.get(hit._source.OwnerUserId);
     });
@@ -190,8 +202,8 @@ exports.questionGet = async function (req, res, next) {
       relatedPostsValues,
     });
   } catch (err) {
-    console.log('Error in questionControl get: ' + err);
-    res.render('question', {
+    console.error(err);
+    res.render('error', {
       title: 'Stack Caspia question detail',
       errors: [err],
     });

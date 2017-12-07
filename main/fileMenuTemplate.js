@@ -3,7 +3,7 @@
  * @file
  */
 
-const {BrowserWindow, dialog, app} = require('electron');
+const {BrowserWindow, dialog} = require('electron');
 const {readFiles, indexFromPostIds, extendAnswersFromQuestions} = require('../lib/elasticReader');
 const {parameters, preferenceDefaults} = require('../lib/parameters');
 const {client} = require('../lib/elasticClient');
@@ -96,18 +96,17 @@ const fileMenuTemplate = {
           title: 'Get Posts.xml file to process',
           properties: ['openFile']});
         try {
-          const tags = parameters.tagsToIndex.split(' ');
-
           // Search for question ids matching the tags.
           await mainMsg.promiseRenderEvent('setbodytext', 'Searching ...');
-          const postIds = await getQuestionIdsByTags(files ? files[0] : null, tags, onProgress);
+          const postIds = await getQuestionIdsByTags(files ? files[0] : null, null, onProgress);
           console.log('Found ' + postIds.length + ' matching posts');
           await mainMsg.promiseRenderEvent('setbodytext', `Found ${postIds.length} matching posts`);
 
           // Write the results to a file in the same directory
           const fileDirectory = path.dirname(files[0]);
           await fs.writeFile(path.join(fileDirectory, 'Questions.json'), JSON.stringify({
-            tags,
+            tagsToInclude: parameters.tagsToInclude,
+            tagsToExclude: parameters.tagsToExclude,
             postIds,
           }));
         } catch (err) {

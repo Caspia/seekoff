@@ -9,11 +9,11 @@ block content
         li!= error.msg || error
   p
     strong Total Hits:
-    span !{totalHits};
+    span=totalHits
   p
     if previousUrl
-      span <a href=!{previousUrl}>Previous </a>  
-    span <a href=!{nextUrl}>Next</a>
+      span <a href=#{previousUrl}>Previous </a>  
+    span <a href=#{nextUrl}>Next</a>
   if renderResults
     hr
     .container
@@ -29,23 +29,23 @@ block content
             h3= result.voteCount
           .col-md-11
             if result.title
-              <a class='searchlink' href=!{'/question/' + result.questionId}><h3>!{result.title}</h3></a>
+              <a class='searchlink' href=#{'/question/' + result.questionId}><h3>#{result.title}</h3></a>
               if (result.questionTitle)
                 p="(Q: " + result.questionTitle + " )"
               p
                 if (result.score)
                   strong
-                    <a href=!{'explain?search_term=' + encodeURIComponent(query) + '&id=' + result.myId}>Score:!{(result.score).toFixed(2)}</a>
+                    <a href=#{'explain?search_term=' + encodeURIComponent(query) + '&id=' + result.myId}>Score:#{(result.score).toFixed(2)}</a>
                 if result.Tags && result.Tags.split(' ').length
                   strong &nbsp&nbspTags:&nbsp
                   for tag in result.Tags.split(' ')
                     span.questiontag= tag
                     span &nbsp&nbsp
               .highlight
-                p !{result.highlight}
+                p!=result.highlight
             else
               p= JSON.stringify(result)
   p
     if previousUrl
-      span <a href=!{previousUrl}>Previous </a>  
-    span <a href=!{nextUrl}>Next</a>
+      span <a href=#{previousUrl}>Previous </a>  
+    span <a href=#{nextUrl}>Next</a>

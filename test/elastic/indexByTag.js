@@ -37,26 +37,26 @@ describe('indexing of xml files works by tag', function () {
   //  }
 
   it('accumulates postids using questions', async function () {
-    const [postIds] = await getAllPostIds(questionsPath, null);
+    const [postIds] = await getAllPostIds(questionsPath, null, null);
     assert.equal(9, postIds.size, 'getAllPostIds correctly adds answers to posts');
   });
 
   it('gets correct Ids by tag', async function () {
-    const postIds = await getQuestionIdsByTags(postsPath, ['site-promotion']);
-    //console.log('postIds is\n' + prettyjson.render(postIds));
+    const postIds = await getQuestionIdsByTags(postsPath, 'site-promotion');
+    //console.log('postIds is\n' + prettyFormat(postIds));
     assert(postIds.length == 1, 'Found 1 match');
     assert(postIds[0] === 3, 'Matches Id 3');
   });
 
   it('finds a tag in a title only', async function () {
-    const postIds = await getQuestionIdsByTags(postsPath, ['FAQ']);
-    //console.log('postIds is\n' + prettyjson.render(postIds));
+    const postIds = await getQuestionIdsByTags(postsPath, 'FAQ');
+    //console.log('postIds is\n' + prettyFormat(postIds));
     assert(postIds.length == 1, 'Found 1 match');
     assert(postIds[0] === 2, 'Matches Id 2');
   });
 
   it('returns multiple Ids and also matches lower case', async function () {
-    const postIds = await getQuestionIdsByTags(postsPath, ['site-promotion', 'faq']);
+    const postIds = await getQuestionIdsByTags(postsPath, 'site-promotion faq');
     //console.log('postIds is\n' + prettyjson.render(postIds));
     assert(postIds.length == 2, 'Found 2 match');
     assert(postIds.includes(3), 'Matches Id 3');
@@ -64,7 +64,7 @@ describe('indexing of xml files works by tag', function () {
   });
 
   it('finds tags at end and beginning of title', async function () {
-    const postIds = await getQuestionIdsByTags(postsPath, ['off-topic', 'the']);
+    const postIds = await getQuestionIdsByTags(postsPath, 'off-topic the');
     //console.log('postIds is\n' + prettyjson.render(postIds));
     assert(postIds.length == 3, 'Found 3 match');
     assert(postIds.includes(3), 'Matches Id 3');

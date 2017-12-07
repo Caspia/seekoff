@@ -137,7 +137,7 @@ describe('indexing of xml files into elastic search', function () {
       1,
       {});
     assert(res.matched, 'Found search result in explain');
-    console.log('res.explanation:\n' + prettyjson.render(res.explanation));
+    //console.log('res.explanation:\n' + prettyjson.render(res.explanation));
     assert(res.explanation.value < 1.0 && res.explanation.value > 0, 'explain value in range');
     //console.log('explain result is ' + prettyjson.render(res));
   });

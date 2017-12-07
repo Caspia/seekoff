@@ -38,6 +38,7 @@
     "html2plaintext": "^1.1.1",
     "js-object-pretty-print": "^0.3.0",
     "moment": "^2.18.1",
+    "porter-stemmer": "^0.9.1",
     "pretty-format": "^21.1.0",
     "promise-limit": "^2.5.0",
     "pug": "^2.0.0-rc.3",

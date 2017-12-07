@@ -15,16 +15,16 @@ block content
         p
           em
             strong Votes:&nbsp
-            != question.VoteCount
+            = question.VoteCount
             strong &nbsp Asked:&nbsp
-            != question.CreatedFormatted 
+            = question.CreatedFormatted 
             strong &nbsp by:&nbsp
-            != question.DisplayName
+            = question.DisplayName
         .postbody.hsmaller !{question.Body}
         .comment
           for questionComment in questionComments
             hr
-            p !{questionComment._source.Text} - <em>on !{questionComment._source.CreatedFormatted} by !{questionComment._source.DisplayName}</em>
+            p #{questionComment._source.Text} - <em>on #{questionComment._source.CreatedFormatted} by #{questionComment._source.DisplayName}</em>
         for answer in answers
           hr
           p
@@ -32,32 +32,32 @@ block content
               if (question.AcceptedAnswerId == Number(answer._id))
                 span &#10004;&nbsp&nbsp
               strong Votes:&nbsp
-              != answer._source.VoteCount
+              = answer._source.VoteCount
               strong &nbsp Answered:&nbsp
-              != answer._source.CreatedFormatted
+              = answer._source.CreatedFormatted
               strong &nbsp by &nbsp
-              != answer._source.DisplayName
+              = answer._source.DisplayName
           .postbody.hsmaller !{answer._source.Body}
           .comment
             for answerComment in answer._source.Comments
               hr
-              p !{answerComment._source.Text} - <em>on !{answerComment._source.CreatedFormatted} by !{answerComment._source.DisplayName}</em>
+              p #{answerComment._source.Text} - <em>on #{answerComment._source.CreatedFormatted} by #{answerComment._source.DisplayName}</em>
         if errors
           ul
             for error in errors
-              li!= error.msg || error
+              li= error.msg || error
       .col-md-3
         p
           em
             strong View Count:&nbsp
-            != question.ViewCount || '0'
+            = question.ViewCount || '0'
         if linkedPostsValues.length
           hr
           h3 Linked
           for post in linkedPostsValues
-            p <a class='postlink' href=!{'/question/' + post.Id}>!{post.Title}</a>
+            p <a class='postlink' href=#{'/question/' + post.Id}>#{post.Title}</a>
         if relatedPostsValues.length
           hr
           h3 Related
           for post in relatedPostsValues
-            p <a class='postlink' href=!{'/question/' + post.Id}>!{post.Title}</a>
+            p <a class='postlink' href=#{'/question/' + post.Id}>#{post.Title}</a>
