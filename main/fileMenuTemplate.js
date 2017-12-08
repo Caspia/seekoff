@@ -13,6 +13,9 @@ const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-
 const path = require('path');
 const fs = require('fs-extra');
 
+const appPath = path.join(require('os').homedir(), '.stackoff');
+const prefsPath = path.join(appPath, 'prefs.json');
+
 const fileMenuTemplate = {
   label: 'File',
   submenu: [
@@ -85,7 +88,7 @@ const fileMenuTemplate = {
         function onProgress(linesRead, totalHits, percentDone, progressDescription) {
           console.log(`Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
           mainMsg.promiseRenderEvent('progress', {
-            description: progressDescription || '% Completion getting post ids by tag',
+            description: progressDescription || '% Completion getting question ids by tag',
             valuenow: String(percentDone),
             textresult: `Total hits: ${totalHits}, Records processed: ${linesRead}`,
           });
@@ -98,17 +101,25 @@ const fileMenuTemplate = {
         try {
           // Search for question ids matching the tags.
           await mainMsg.promiseRenderEvent('setbodytext', 'Searching ...');
-          const postIds = await getQuestionIdsByTags(files ? files[0] : null, null, onProgress);
-          console.log('Found ' + postIds.length + ' matching posts');
-          await mainMsg.promiseRenderEvent('setbodytext', `Found ${postIds.length} matching posts`);
+          // Store the selected directory in parameters
+          if (files && files[0]) {
+            const fileDirectory = path.dirname(files[0]);
+            parameters.xmlFilePath = fileDirectory;
+            if (!(await fs.exists(appPath))) {
+              await fs.mkdir(appPath);
+            }
+            await fs.writeFile(prefsPath, JSON.stringify(parameters));
+            const postIds = await getQuestionIdsByTags(files[0], null, onProgress);
+            console.log('Found ' + postIds.length + ' matching posts');
+            await mainMsg.promiseRenderEvent('setbodytext', `Found ${postIds.length} matching posts`);
 
-          // Write the results to a file in the same directory
-          const fileDirectory = path.dirname(files[0]);
-          await fs.writeFile(path.join(fileDirectory, 'Questions.json'), JSON.stringify({
-            tagsToInclude: parameters.tagsToInclude,
-            tagsToExclude: parameters.tagsToExclude,
-            postIds,
-          }));
+            // Write the results to a file in the same directory
+            await fs.writeFile(path.join(fileDirectory, 'Questions.json'), JSON.stringify({
+              tagsToInclude: parameters.tagsToInclude,
+              tagsToExclude: parameters.tagsToExclude,
+              postIds,
+            }));
+          }
         } catch (err) {
           console.log('Error getting question ids by tag: ' + prettyFormat(err));
         }
@@ -177,9 +188,6 @@ const fileMenuTemplate = {
     {
       label: 'Set index parameters',
       click: async () => {
-        const appPath = path.join(require('os').homedir(), '.stackoff');
-        const prefsPath = path.join(appPath, 'prefs.json');
-
         const results = await mainMsg.promiseRenderEvent('setparameters', parameters);
         if (results.button == 'defaults') {
           results.parameters = JSON.parse(JSON.stringify(preferenceDefaults));
