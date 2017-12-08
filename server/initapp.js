@@ -6,12 +6,12 @@
 
 const debug = require('debug')('stackcaspia:server');
 const http = require('http');
-const constants = require('../lib/constants');
 const path = require('path');
 const routes = require('./routes');
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
+const {parameters} = require('../lib/parameters');
 
 let gServer;
 let gApp;
@@ -36,10 +36,7 @@ function initapp(app) {
   // routing
   app.use('/', routes);
 
-  /**
-   * Get port from environment and store in Express.
-   */
-  const port = normalizePort(process.env.PORT || constants.DEFAULT_WEB_PORT);
+  const port = normalizePort(parameters.port);
   app.set('port', port);
 
   /**

@@ -1,14 +1,14 @@
 {
-  "name": "stackcaspia",
-  "productName": "Stackcaspia",
+  "name": "stackoff",
+  "productName": "Stackoff",
   "version": "0.0.0",
   "description": "My primo app",
   "license": "MIT",
-  "repository": "rkentjames/stackcaspia",
+  "repository": "Caspia/stackoff",
   "author": {
     "name": "R. Kent James",
     "email": "rkent@caspia.com",
-    "url": "caspia.com"
+    "url": "http://caspia.com"
   },
   "scripts": {
     "start": "electron ./app.js",

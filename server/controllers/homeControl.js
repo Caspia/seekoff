@@ -3,5 +3,5 @@
  */
 
 exports.homeGet = function (req, res, next) {
-  res.render('index', {title: 'Stack Caspia offline search'});
+  res.render('index', {title: 'Stackoff offline search'});
 };
