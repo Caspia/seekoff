@@ -1,0 +1,19 @@
+# excluded because we'll likely need to rebuild this.
+node_modules
+
+# documentation should not be visible in production.
+docs
+
+# static assets are rebuild in the docker container.
+dist
+
+# tests are not run in the docker container.
+test
+
+# we won't use the .git folder in production.
+.git
+
+# we won't run electron
+main
+render
+views
