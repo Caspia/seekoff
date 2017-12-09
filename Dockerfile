@@ -1,5 +1,4 @@
 FROM node:8
-USER node
 
 # create app directory
 RUN mkdir -p /usr/src/app
@@ -7,12 +6,13 @@ WORKDIR /usr/src/app
 
 # Bundle the app source
 COPY . /usr/src/app
+RUN npm install
 
 # Set the prefs file in the expected location
-RUN mkdir /user/node/.stackoff
-COPY ./prefs.json /user/node/.stackoff/prefs.json
+USER node
+RUN mkdir /home/node/.stackoff
+COPY ./prefs.json /home/node/.stackoff/prefs.json
 
-RUN npm install
 EXPOSE 8080
 
 # ensure the runtime of the container is in production mode
