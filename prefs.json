@@ -1,10 +1,9 @@
 {
 "elasticHost":"localhost:9200",
 "indexPrefix":"javascript_",
-"tagsToInclude":"javascript node.js express passport mongoose html html5bootstrap mocha electron pug jade reactjs react-jsx react-router reduxgit eslint",
+"tagsToInclude":"javascript node.js express passport mongoose html html5 bootstrap mocha electron pug jade reactjs react-jsx react-router redux git eslint",
 "tagsToExclude":"exploit sql-injection penetration-testing xss sniff attack",
 "port":"8080",
 "indexTimeout":"30000",
 "xmlFilePath":"",
-"defaultWebPort":"8080"
 }

@@ -1,15 +1,15 @@
 FROM node:8
 
+USER node
 # create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
 
 # Bundle the app source
-COPY . /usr/src/app
+COPY . /home/node/app
 RUN npm install
 
 # Set the prefs file in the expected location
-USER node
 RUN mkdir /home/node/.stackoff
 COPY ./prefs.json /home/node/.stackoff/prefs.json
 
