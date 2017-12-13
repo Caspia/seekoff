@@ -1,0 +1,22 @@
+version: '2'
+services:
+  webapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: stackoff:latest
+    depends_on:
+      - elasticsearch
+    environment:
+      STACKOFF_ELASTIC_HOST: elasticsearch:9200
+      STACKOFF_INDEX_PREFIX: javascript_
+      STACKOFF_XML_FILE_PATH: /sedata
+    volumes:
+      - /sedata/201708:/sedata
+  elasticsearch:
+    build:
+      context: ./
+      dockerfile: Dockerfile-elastic
+    image: elastic:latest
+    volumes:
+      - /elastic/data:/usr/share/elasticsearch/data
