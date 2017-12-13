@@ -6,6 +6,7 @@ RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
 # Bundle the app source
+ENV NODE_ENV production
 COPY . /home/node/app
 RUN npm install
 
@@ -14,8 +15,5 @@ RUN mkdir /home/node/.stackoff
 COPY ./prefs.json /home/node/.stackoff/prefs.json
 
 EXPOSE 8080
-
-# ensure the runtime of the container is in production mode
-ENV NODE_ENV production
 
 ENTRYPOINT ["npm", "run", "server"]

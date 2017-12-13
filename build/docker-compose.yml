@@ -1,0 +1,22 @@
+# Docker compose file for stackoff in production environment (mostly linux)
+# Usage: run docker-compose from the directory containing this file (./build)
+version: '2.1'
+services:
+  webapp:
+    build:
+      context: ../
+      dockerfile: ./elasticsearch/Dockerfile
+    image: stackoff-webapp:$STACKOFF_DOCKER_IMAGE_LABEL
+    depends_on:
+      - elasticsearch
+    env_file: .env
+    restart: always
+  elasticsearch:
+    build:
+      context: ../
+      dockerfile: ./elasticsearch/Dockerfile
+    env_file: .env
+    image: stackoff-elasticsearch:$STACKOFF_DOCKER_IMAGE_LABEL
+    restart: always
+    volumes:
+      - $STACKOFF_ELASTICSEARCH_DATA:/usr/share/elasticsearch/data
