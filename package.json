@@ -15,8 +15,8 @@
     "build": "electron-packager . --out=dist --asar --overwrite --all",
     "devstart": "SET DEBUG=stackcaspia:server && npm run server",
     "server": "node bin/www.js",
-    "webapp-build": "docker build -f ./build/webapp/Dockerfile .",
-    "elasticsearch-build": "docker build -f ./build/elasticsearch/Dockerfile ."
+    "webapp-build": "docker build -t stackoff-webapp:latest -f ./build/webapp/Dockerfile .",
+    "elasticsearch-build": "docker build -t stackoff-elasticsearch:latest -f ./build/elasticsearch/Dockerfile ."
   },
   "files": [
     "app.js",
@@ -31,6 +31,7 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "can-param": "^1.0.1",
+    "commander": "^2.11.0",
     "elasticsearch": "^13.3.1",
     "express": "^4.15.4",
     "express-validator": "^4.2.1",
@@ -40,11 +41,11 @@
     "moment": "^2.18.1",
     "porter-stemmer": "^0.9.1",
     "pretty-format": "^21.1.0",
+    "prettyjson": "^1.2.1",
     "promise-limit": "^2.5.0",
     "pug": "^2.0.0-rc.3",
     "sanitize-html": "^1.14.1",
-    "xml2js": "^0.4.19",
-    "prettyjson": "^1.2.1"
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "chai": "^4.1.2",

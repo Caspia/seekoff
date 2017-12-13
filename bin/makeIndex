@@ -1,23 +1,38 @@
+#!/usr/bin/env node
+
 /**
  * Make full index from command line without Electron app
  */
 
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const path = require('path');
-const elasticClient = require('./lib/elasticClient');
-const {parameters} = require('./lib/parameters');
+const elasticClient = require('../lib/elasticClient');
+const {parameters} = require('../lib/parameters');
 const fs = require('fs-extra');
+var program = require('commander');
+
+program
+  .version('0.1.0')
+  .usage('[options] (does all steps unless a single step selected in options)')
+  .option('--no-questions', 'skip generate Questions.json')
+  .option('--no-posts', 'skip generate PostsIds.json')
+  .option('--no-index', 'skip index into elasticsearch')
+  .option('--no-extend', 'skip extend questions using ExtendedEquestionIds.json')
+  .parse(process.argv);
 
 const {
   getQuestionIdsByTags,
   indexFromPostIds,
   getAllPostIds,
-  extendAnswersFromQuestions} = require('./lib/elasticReader');
+  extendAnswersFromQuestions} = require('../lib/elasticReader');
 
 async function doAllSteps() {
+  for (const parm of ['questions', 'posts', 'index', 'extend']) {
+    console.log(`parm ${parm} is ${program[parm]}`);
+  }
   // Step #1: Select questions to index by tag, creating Questions.json
   const questionsPath = path.join(parameters.xmlFilePath, 'Questions.json');
-  {
+  if (program.questions) {
     const onProgress = (linesRead, totalHits, percentDone, progressDescription) => {
       console.log(`select questions: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
     };
@@ -45,8 +60,8 @@ async function doAllSteps() {
   //   creating PostIds.json and ExtendedQuestionsIds.json
   const allPostIdsPath = path.join(parameters.xmlFilePath, 'PostIds.json');
   const extendedQuestionIdsPath = path.join(parameters.xmlFilePath, 'ExtendedQuestionIds.json');
-  console.log('Step 2 of 4: Adding links and answers to get allPostIds');
-  {
+  if (program.posts) {
+    console.log('Step 2 of 4: Adding links and answers to get allPostIds');
     const onProgress = (linesRead, totalHits, percentDone, progressDescription) => {
       console.log(`make allPostIds: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
     };
@@ -66,7 +81,7 @@ async function doAllSteps() {
 
   // Step #3: Index items from allPostIds to elastic search database
   const client = elasticClient.client;
-  {
+  if (program.index) {
     console.log('Step 3 of 4: indexing into ElasticSearch');
     const onProgress = (linesRead, totalHits, percentDone, progressDescription) => {
       console.log(`${progressDescription}: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
@@ -81,8 +96,8 @@ async function doAllSteps() {
   }
 
   // step #4: extend answers from posts
-  console.log('Step 4 of 4: Extending answers for questions in ExtendedQuestionIds.json');
-  {
+  if (program.extend) {
+    console.log('Step 4 of 4: Extending answers for questions in ExtendedQuestionIds.json');
     const onProgress = (linesRead, totalHits, percentDone, progressDescription) => {
       console.log(`extending answers: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
     };
