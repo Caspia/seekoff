@@ -10,6 +10,8 @@ services:
     depends_on:
       - elasticsearch
     env_file: .env
+    ports:
+     - "8080:8080"
     restart: always
     volumes:
       - $STACKOFF_POSTS_PATH:/sedata

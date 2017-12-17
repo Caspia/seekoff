@@ -1,5 +1,7 @@
 FROM node:8
 
+# utilities helpful in development
+RUN apt-get update && apt-get install -y nano && apt-get install -y curl 
 # create app directory
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
