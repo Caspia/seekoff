@@ -1,22 +1,26 @@
 # Docker compose file for stackoff in production environment (mostly linux)
 # Usage: run docker-compose from the directory containing this file (./build)
-version: '2.1'
+version: '2'
 services:
   webapp:
     build:
       context: ../
-      dockerfile: ./elasticsearch/Dockerfile
+      dockerfile: ./build/webapp/Dockerfile
     image: stackoff-webapp:$STACKOFF_DOCKER_IMAGE_LABEL
     depends_on:
       - elasticsearch
     env_file: .env
+    ports:
+     - "8080:8080"
     restart: always
+    volumes:
+      - $STACKOFF_POSTS_PATH:/sedata
   elasticsearch:
     build:
       context: ../
-      dockerfile: ./elasticsearch/Dockerfile
+      dockerfile: ./build/elasticsearch/Dockerfile
     env_file: .env
     image: stackoff-elasticsearch:$STACKOFF_DOCKER_IMAGE_LABEL
     restart: always
     volumes:
-      - $STACKOFF_ELASTICSEARCH_DATA:/usr/share/elasticsearch/data
+      - $STACKOFF_ELASTICSEARCH_DATA_PATH:/usr/share/elasticsearch/data
