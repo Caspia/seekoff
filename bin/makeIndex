@@ -66,7 +66,7 @@ async function doAllSteps() {
       console.log(`make allPostIds: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
     };
 
-    const [allPostIds, documentCount, questionIds] = await getAllPostIds(questionsPath, onProgress);
+    const [allPostIds, documentCount, extendedQuestionIds] = await getAllPostIds(questionsPath, onProgress);
     console.log('Selected document count: ' + documentCount);
     // Write the results to a file in the same directory
     {
@@ -74,7 +74,7 @@ async function doAllSteps() {
       await fs.writeFile(allPostIdsPath, JSON.stringify(allPostIdsArray));
     }
     {
-      const extendedQuestionIdsArray = Array.from(questionIds);
+      const extendedQuestionIdsArray = Array.from(extendedQuestionIds);
       await fs.writeFile(extendedQuestionIdsPath, JSON.stringify(extendedQuestionIdsArray));
     }
   }

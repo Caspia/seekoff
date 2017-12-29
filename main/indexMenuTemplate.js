@@ -81,7 +81,7 @@ const indexMenuTemplate = {
           title: 'Get Questions.json file to process',
           properties: ['openFile']});
         try {
-          const [postIds, documentCount, questionIds] = await getAllPostIds(files ? files[0] : null, onProgress);
+          const [postIds, documentCount, extendedQuestionIds] = await getAllPostIds(files ? files[0] : null, onProgress);
           await mainMsg.promiseRenderEvent('setbodytext', `Added ${documentCount} matching posts`);
 
           // Write the results to a file in the same directory
@@ -91,7 +91,7 @@ const indexMenuTemplate = {
             path.join(fileDirectory, 'PostIds.json'),
             JSON.stringify(postIdsArray)
           );
-          const extendedQuestionIdsArray = Array.from(questionIds);
+          const extendedQuestionIdsArray = Array.from(extendedQuestionIds);
           await fs.writeFile(
             path.join(fileDirectory, 'ExtendedQuestionIds.json'),
             JSON.stringify(extendedQuestionIdsArray)
