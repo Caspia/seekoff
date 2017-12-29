@@ -1,9 +1,9 @@
 {
 "elasticHost":"elasticsearch:9200",
 "indexPrefix":"javascript_",
-"tagsToInclude":"javascript node.js express passport mongoose html html5 bootstrap mocha electron pug jade reactjs react-jsx react-router redux git eslint",
-"tagsToExclude":"exploit sql-injection penetration-testing xss sniff attack",
+"tagsToInclude":"javascript node.js express passport mongoose html html5 bootstrap mocha electron pug jade reactjs jsx react-router redux git eslint jasmine",
+"tagsToExclude":"exploit sql-injection penetration-testing xss sniff attack crack",
 "port":"8080",
 "indexTimeout":"30000",
-"xmlFilePath":"",
+"xmlFilePath":"/sedata"
 }
