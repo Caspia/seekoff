@@ -6,6 +6,7 @@
 const {app, Menu, BrowserWindow} = require('electron');
 const fileMenuTemplate = require('./main/fileMenuTemplate');
 const elasticMenuTemplate = require('./main/elasticMenuTemplate');
+const indexMenuTemplate = require('./main/indexMenuTemplate');
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
@@ -46,6 +47,6 @@ app.on('activate', () => {
 });
 
 app.on('ready', () => {
-  Menu.setApplicationMenu(Menu.buildFromTemplate([fileMenuTemplate, elasticMenuTemplate]));
+  Menu.setApplicationMenu(Menu.buildFromTemplate([fileMenuTemplate, indexMenuTemplate, elasticMenuTemplate]));
   mainWindow = createMainWindow();
 });
