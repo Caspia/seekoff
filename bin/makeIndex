@@ -88,10 +88,11 @@ async function doAllSteps() {
     };
 
     const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
+    const userIds = new Set();
     //const types = ['seuser'];
     for (const type of types) {
       console.log('indexing ' + type);
-      await indexFromPostIds(allPostIdsPath, client, type, parameters.indexPrefix, onProgress);
+      await indexFromPostIds(allPostIdsPath, client, type, parameters.indexPrefix, onProgress, userIds);
     }
   }
 

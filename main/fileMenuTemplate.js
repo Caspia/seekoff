@@ -64,11 +64,12 @@ const fileMenuTemplate = {
         if (hasPostIds) {
           // Limit indexing using the questions file. sepost must be first.
           const types = ['sepost', 'secomment', 'seuser', 'sepostlink'];
+          const userIds = new Set();
           //const types = ['seuser'];
           for (const type of types) {
             currentType = type;
             console.log('indexing ' + type);
-            await indexFromPostIds(postIdsPath, client, type, parameters.indexPrefix, onProgress);
+            await indexFromPostIds(postIdsPath, client, type, parameters.indexPrefix, onProgress, userIds);
           }
           await mainMsg.promiseRenderEvent('setbodytext', `Done indexing directory ${files[0]}`);
         } else {

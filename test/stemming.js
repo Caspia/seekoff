@@ -17,13 +17,15 @@ const tests = [
   [undefined, {Id: '7', Title: 'These are not the droids you are looking for'}, false],
 ];
 
-describe('Exclude terms with stemming', function () {
-  it('correctly excludes', function () {
-    tests.forEach(test => {
-      const [exclude, term, result] = test;
-      const shouldReject = makeDoesMatch(exclude, false);
-      //console.log('Testing ' + JSON.stringify(test));
-      result ? assert.isTrue(shouldReject(term)) : assert.isFalse(shouldReject(term));
+describe(__filename, function () {
+  describe('Exclude terms with stemming', function () {
+    it('correctly excludes', function () {
+      tests.forEach(test => {
+        const [exclude, term, result] = test;
+        const shouldReject = makeDoesMatch(exclude, false);
+        //console.log('Testing ' + JSON.stringify(test));
+        result ? assert.isTrue(shouldReject(term)) : assert.isFalse(shouldReject(term));
+      });
     });
   });
 });

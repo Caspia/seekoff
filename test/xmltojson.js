@@ -39,23 +39,25 @@ const JSON_TESTS = [
   },
 ];
 
-describe('Stack Exchange xml to json functionality', function () {
-  const parsedObjects = [];
+describe(__filename, function () {
+  describe('Stack Exchange xml to json functionality', function () {
+    const parsedObjects = [];
 
-  it('reads posts into json', async function () {
-    const postsPath = path.join(dataPath, 'Posts.xml');
-    await readFile(postsPath, 'sepost', (lineObject) => {
-      assert(lineObject, 'returned something into readFile action');
-      parsedObjects.push(lineObject);
+    it('reads posts into json', async function () {
+      const postsPath = path.join(dataPath, 'Posts.xml');
+      await readFile(postsPath, 'sepost', (lineObject) => {
+        assert(lineObject, 'returned something into readFile action');
+        parsedObjects.push(lineObject);
+      });
     });
-  });
 
-  it('correctly matches sample values', function () {
-    for (const test of JSON_TESTS) {
-      for (const parm in test.data) {
-        assert.strictEqual(test.data[parm], parsedObjects[test.index][parm],
-          'parsed object value matches expectation');
+    it('correctly matches sample values', function () {
+      for (const test of JSON_TESTS) {
+        for (const parm in test.data) {
+          assert.strictEqual(test.data[parm], parsedObjects[test.index][parm],
+            'parsed object value matches expectation');
+        }
       }
-    }
+    });
   });
 });
