@@ -64,7 +64,7 @@ async function processSteps() {
   if (doAllSteps || program.posts) {
     console.log('Step 2 of 4: Adding links and answers to get allPostIds');
     const onProgress = (linesRead, totalHits, percentDone, progressDescription) => {
-      console.log(`make allPostIds: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
+      console.log(`allPostIds ${progressDescription}: Read:${linesRead} Hits:${totalHits} completed: ${percentDone.toFixed(2)}%`);
     };
 
     const [allPostIds, documentCount, extendedQuestionIds] = await getAllPostIds(questionsPath, onProgress);
