@@ -18,11 +18,10 @@ function doPing() {
     requestTimeout: 5000,
   })
     .then(r => {
-      mainMsg.sendStatus('Ping Successful');
+      mainMsg.promiseRenderEvent('setbodytext', '<h3>Ping Successful</h3>');
     })
     .catch(e => {
-      console.log('elasticsearch down!');
-      mainMsg.sendStatus('Ping Failed!');
+      mainMsg.promiseRenderEvent('setbodytext', '<h3>Ping Failed!</h3>');
     });
 }
 

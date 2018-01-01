@@ -16,6 +16,7 @@ const prefsPath = path.join(appPath, 'prefs.json');
 const fileMenuTemplate = {
   label: 'File',
   submenu: [
+    /*
     {
       label: 'Test',
       click: async () => {
@@ -25,6 +26,7 @@ const fileMenuTemplate = {
         console.log('Done with File Test menu item');
       },
     },
+    */
     {
       label: 'Toggle DevTools',
       accelerator: 'Alt+CmdOrCtrl+I',

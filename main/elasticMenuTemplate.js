@@ -12,9 +12,11 @@ const pug = require('pug');
 const elasticMenuTemplate = {
   label: 'Elastic',
   submenu: [
+    /*
     { label: 'Test',
       click: () => mainMsg.fireMenuSelection('elastic-test'),
     },
+    */
     { label: 'Ping',
       click: () => doPing(),
     },
@@ -39,6 +41,7 @@ const elasticMenuTemplate = {
         /* */
       },
     },
+    /*
     {
       label: 'Create Index',
       click: function () {
@@ -53,6 +56,8 @@ const elasticMenuTemplate = {
           });
       },
     },
+    */
+    /*
     {
       label: 'Delete index ...',
       click: function () {
@@ -65,6 +70,7 @@ const elasticMenuTemplate = {
           });
       },
     },
+    */
   ],
 };
 

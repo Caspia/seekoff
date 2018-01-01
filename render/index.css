@@ -1,10 +1,7 @@
-.footer {
-  width: 100%;
-  position: fixed;
-  bottom: 0;
+.btn {
   margin: 10px;
 }
 
-.btn {
-  margin: 10px;
+#mainbody {
+  padding: 20px;
 }

@@ -105,11 +105,6 @@ window.onload = () => {
   // Setup listener to process main menu selections
   onMenuSelection();
 
-  document.querySelector('#pingbutton')
-    .addEventListener('click', (event) => {
-      console.log('onclick pingbutton');
-      ipcRenderer.send('elastic-request', 'ping');
-    });
 };
 
 /**
