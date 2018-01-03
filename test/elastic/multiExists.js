@@ -7,6 +7,7 @@ const prettyjson = require('prettyjson'); // eslint-disable-line no-unused-vars
 
 const libPath = path.join(__dirname, '..', '..', 'lib');
 const elasticClient = require(path.join(libPath, 'elasticClient'));
+const typeMappings = require(path.join(libPath, 'typeMappings'));
 const { readFiles } = require(path.join(libPath, 'elasticReader'));
 const {parameters} = require(path.join(libPath, 'parameters'));
 
@@ -20,7 +21,7 @@ describe(__filename, function () {
     this.timeout(10000);
     before(async function () {
       client = elasticClient.makeClient({host: TEST_HOST});
-      for (const type in elasticClient.typeMappings) {
+      for (const type in typeMappings) {
         // Delete test index if it exists
         try {
           await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
@@ -28,13 +29,13 @@ describe(__filename, function () {
         await elasticClient.createIndex(client, TEST_INDEX_PREFIX + type, type);
       }
       await readFiles(dataPath, client, TEST_INDEX_PREFIX);
-      for (const type in elasticClient.typeMappings) {
+      for (const type in typeMappings) {
         await elasticClient.promiseRefreshIndex(client, TEST_INDEX_PREFIX + type);
       };
     });
 
     after(async function () {
-      for (const type in elasticClient.typeMappings) {
+      for (const type in typeMappings) {
         await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
       }
     });

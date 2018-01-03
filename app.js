@@ -1,5 +1,5 @@
 /**
- * Main startup file
+ * Main startup file for the Electron indexing management app.
  * @file
  */
 

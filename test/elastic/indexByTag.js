@@ -6,6 +6,7 @@ const assert = require('chai').assert;
 const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const elasticClient = require('../../lib/elasticClient');
+const typeMappings = require('../../lib/typeMappings');
 
 const {
   getQuestionIdsByTags,
@@ -23,7 +24,7 @@ describe(__filename, function () {
     this.timeout(10000);
     const client = elasticClient.makeClient({host: TEST_HOST});
     before(async function () {
-      for (const type in elasticClient.typeMappings) {
+      for (const type in typeMappings) {
         // Delete test index if it exists
         try {
           await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
@@ -32,7 +33,7 @@ describe(__filename, function () {
     });
 
     //after(async function () {
-    //  for (const type in elasticClient.typeMappings) {
+    //  for (const type in typeMappings) {
     //    await elasticClient.deleteIndex(client, TEST_INDEX_PREFIX + type);
     //  }
 

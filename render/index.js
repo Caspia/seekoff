@@ -157,6 +157,7 @@ function onBody(f) {
 
 /**
  * @typedef EventObject
+ * @global
  * @see "Event object" in https://electron.atom.io/docs/api/ipc-main/
  */
 /**
