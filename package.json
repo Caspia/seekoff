@@ -1,10 +1,10 @@
 {
-  "name": "stackoff",
-  "productName": "Stackoff",
+  "name": "seekoff",
+  "productName": "Seekoff",
   "version": "0.0.0",
   "description": "My primo app",
   "license": "MIT",
-  "repository": "Caspia/stackoff",
+  "repository": "Caspia/seekoff",
   "author": {
     "name": "R. Kent James",
     "email": "rkent@caspia.com",
@@ -16,8 +16,8 @@
     "devstart": "SET DEBUG=stackcaspia:server && npm run server",
     "docs": "jsdoc -c jsdoc.json -d docs -t node_modules/minami",
     "server": "node bin/www.js",
-    "webapp-build": "docker build -t stackoff-webapp:latest -f ./build/webapp/Dockerfile .",
-    "elasticsearch-build": "docker build -t stackoff-elasticsearch:latest -f ./build/elasticsearch/Dockerfile ."
+    "webapp-build": "docker build -t seekoff-webapp:latest -f ./build/webapp/Dockerfile .",
+    "elasticsearch-build": "docker build -t seekoff-elasticsearch:latest -f ./build/elasticsearch/Dockerfile ."
   },
   "files": [
     "app.js",

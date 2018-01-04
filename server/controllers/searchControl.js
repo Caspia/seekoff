@@ -117,7 +117,7 @@ exports.searchGet = async function (req, res, next) {
       //console.log('renderResults are\n', prettyFormat(renderResults));
       // Show the results
       res.render('search', {
-        title: 'Stackoff offline search',
+        title: 'Seekoff offline search',
         renderResults,
         totalHits: searchResults.hits.total,
         nextUrl,
@@ -157,7 +157,7 @@ exports.explainGet = async function (req, res, next) {
 
       //console.log('Document\n', prettyFormat(explainDocument));
       res.render('explain', {
-        title: 'Stackoff search explanation',
+        title: 'Seekoff search explanation',
         explainResults: sanitizeHtml(prettyHtml(explainResults.explanation, 2, 'html')),
         explainDocument: sanitizeHtml(prettyHtml(explainDocument.docs[0], 2, 'html')),
         query: req.query.search_term,
