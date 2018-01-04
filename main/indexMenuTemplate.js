@@ -13,7 +13,7 @@ const prettyFormat = require('pretty-format'); // eslint-disable-line no-unused-
 const path = require('path');
 const fs = require('fs-extra');
 
-const appPath = path.join(require('os').homedir(), '.stackoff');
+const appPath = path.join(require('os').homedir(), '.seekoff');
 const prefsPath = path.join(appPath, 'prefs.json');
 
 const indexMenuTemplate = {

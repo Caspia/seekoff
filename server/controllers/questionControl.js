@@ -194,7 +194,7 @@ exports.questionGet = async function (req, res, next) {
 
     // show the result
     res.render('question', {
-      title: 'Stackoff question detail',
+      title: 'Seekoff question detail',
       question: question.docs[0]._source,
       answers: answers.hits.hits,
       questionComments: questionComments.hits.hits,
@@ -204,7 +204,7 @@ exports.questionGet = async function (req, res, next) {
   } catch (err) {
     console.error(err);
     res.render('error', {
-      title: 'Stackoff question detail',
+      title: 'Seekoff question detail',
       errors: [err],
     });
   }

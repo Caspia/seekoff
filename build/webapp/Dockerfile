@@ -15,8 +15,8 @@ USER node
 RUN npm install
 
 # Set the prefs file in the expected location
-RUN mkdir /home/node/.stackoff
-COPY ./prefs.json /home/node/.stackoff/prefs.json
+RUN mkdir /home/node/.seekoff
+COPY ./prefs.json /home/node/.seekoff/prefs.json
 
 EXPOSE 8080
 

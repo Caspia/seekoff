@@ -1,4 +1,4 @@
-# Docker compose file for stackoff in production environment (mostly linux)
+# Docker compose file for seekoff in production environment (mostly linux)
 # Usage: run docker-compose from the directory containing this file (./build)
 version: '2'
 services:
@@ -6,7 +6,7 @@ services:
     build:
       context: ../
       dockerfile: ./build/webapp/Dockerfile
-    image: stackoff-webapp:$STACKOFF_DOCKER_IMAGE_LABEL
+    image: seekoff-webapp:$SEEKOFF_DOCKER_IMAGE_LABEL
     depends_on:
       - elasticsearch
     env_file: .env
@@ -14,13 +14,13 @@ services:
      - "8080:8080"
     restart: always
     volumes:
-      - $STACKOFF_POSTS_PATH:/sedata
+      - $SEEKOFF_POSTS_PATH:/sedata
   elasticsearch:
     build:
       context: ../
       dockerfile: ./build/elasticsearch/Dockerfile
     env_file: .env
-    image: stackoff-elasticsearch:$STACKOFF_DOCKER_IMAGE_LABEL
+    image: seekoff-elasticsearch:$SEEKOFF_DOCKER_IMAGE_LABEL
     restart: always
     volumes:
-      - $STACKOFF_ELASTICSEARCH_DATA_PATH:/usr/share/elasticsearch/data
+      - $SEEKOFF_ELASTICSEARCH_DATA_PATH:/usr/share/elasticsearch/data
