@@ -13,7 +13,7 @@
   "scripts": {
     "start": "electron ./app.js",
     "build": "electron-packager . --out=dist --asar --overwrite --all",
-    "devstart": "SET DEBUG=stackcaspia:server && npm run server",
+    "devstart": "SET DEBUG=seekoff:server && npm run server",
     "docs": "jsdoc -c jsdoc.json -d docs -t node_modules/minami",
     "server": "node bin/www.js",
     "webapp-build": "docker build -t seekoff-webapp:latest -f ./build/webapp/Dockerfile .",

@@ -4,7 +4,7 @@
  * https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/Tutorial_local_library_website
 */
 
-const debug = require('debug')('stackcaspia:server');
+const debug = require('debug')('seekoff:server');
 const http = require('http');
 const path = require('path');
 const routes = require('./routes');
