@@ -24,3 +24,7 @@ services:
     restart: always
     volumes:
       - $SEEKOFF_ELASTICSEARCH_DATA_PATH:/usr/share/elasticsearch/data
+    ports:
+       - $SEEKOFF_ELASTICSEARCH_BINDIP:9200:9200
+    expose:
+      - 9200

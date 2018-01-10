@@ -115,7 +115,7 @@ Your Linux server needs at least git, docker, and docker-compose installed. How 
 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html">Elasticsearch requires a tweak</a> to the standard Linux system control parameters to work. Add these lines to the bottom of /etc/sysctl.conf and restart the Linux system:
 ```
 # needed for elasticsearch
-vm.max_map_count==262144
+vm.max_map_count=262144
 ```
 
 #### Users

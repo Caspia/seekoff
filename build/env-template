@@ -22,3 +22,5 @@ SEEKOFF_ELASTIC_HOST=elasticsearch:9200
 # Location (on webapp) to find xml files to index
 SEEKOFF_XML_FILE_PATH=/sedata
 
+# Host IP to bind to elasticsearch, typically 127.0.0.1 for private access, 0.0.0.0 for public access
+SEEKOFF_ELASTICSEARCH_BINDIP=127.0.0.1
