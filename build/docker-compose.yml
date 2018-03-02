@@ -11,7 +11,9 @@ services:
       - elasticsearch
     env_file: .env
     ports:
-     - "80:8080"
+     - "8080"
+    environment:
+      - VIRTUAL_HOST=seekoff.caspia.org
     restart: always
     volumes:
       - $SEEKOFF_POSTS_PATH:/sedata
@@ -28,3 +30,8 @@ services:
        - $SEEKOFF_ELASTICSEARCH_BINDIP:9200:9200
     expose:
       - 9200
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
