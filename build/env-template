@@ -24,3 +24,6 @@ SEEKOFF_XML_FILE_PATH=/sedata
 
 # Host IP to bind to elasticsearch, typically 127.0.0.1 for private access, 0.0.0.0 for public access
 SEEKOFF_ELASTICSEARCH_BINDIP=127.0.0.1
+
+# Prefix to use for elasticsearch indices (useful if multiple indices exist on the server)
+SEEKOFF_INDEX_PREFIX=javascript_
