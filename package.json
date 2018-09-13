@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "body-parser": "^1.18.2",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.1.2",
     "can-param": "^1.0.1",
     "commander": "^2.11.0",
     "elasticsearch": "^13.3.1",
@@ -52,16 +52,16 @@
     "chai": "^4.1.2",
     "devtron": "^1.1.0",
     "dialogs": "^1.1.20",
-    "electron": "^1.3.3",
-    "electron-debug": "^1.0.0",
+    "electron": "^1.8.8",
+    "electron-debug": "^1.5.0",
     "electron-packager": "^8.0.0",
-    "eslint": "^4.5.0",
+    "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
     "minami": "^1.2.3",
-    "mocha": "^4.0.0"
+    "mocha": "^4.1.0"
   }
 }
