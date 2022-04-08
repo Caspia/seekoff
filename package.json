@@ -39,7 +39,7 @@
     "fs-extra": "^4.0.2",
     "html2plaintext": "^1.1.1",
     "js-object-pretty-print": "^0.3.0",
-    "moment": "^2.18.1",
+    "moment": "^2.29.2",
     "porter-stemmer": "^0.9.1",
     "pretty-format": "^21.1.0",
     "prettyjson": "^1.2.1",
